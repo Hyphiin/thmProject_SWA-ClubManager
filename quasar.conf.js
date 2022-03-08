@@ -21,7 +21,7 @@ module.exports = configure(function (ctx) {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://quasar.dev/quasar-cli/boot-files
-    boot: ["i18n", "axios"],
+    boot: ["firebase", "i18n", "axios"],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
     css: ["app.scss"],
@@ -94,9 +94,7 @@ module.exports = configure(function (ctx) {
       // directives: [],
 
       // Quasar plugins
-      plugins: [
-        'Dialog'
-      ],
+      plugins: ["Dialog"],
     },
 
     // animations: 'all', // --- includes all animations
