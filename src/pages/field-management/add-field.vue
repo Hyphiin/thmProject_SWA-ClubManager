@@ -50,6 +50,13 @@
       </div>
     </q-pull-to-refresh>
   </main-app>
+  <q-dialog v-model="alert">
+    <q-card>
+      <q-card-section>
+        <div class="text-h6">{{ alertMessage }}</div>
+      </q-card-section>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script>
@@ -75,14 +82,31 @@ export default defineComponent({
     const name = ref("");
     const file = "";
 
+    const alert = ref(false);
+    const alertMessage = ref("");
+
     const addField = async () => {
       // Add a new document with a generated id.
       const docRef = await addDoc(collection(db, "fields"), {
         title: name.value,
         seats: seats.value,
         standingRoom: standingPlaces.value,
-      });
-      console.log("Document written with ID: ", docRef.id);
+      })
+        .then(() => {
+          alert.value = true;
+          alertMessage.value = "Plan erfolgreich hinzugefügt!";
+          setTimeout(() => {
+            alert.value = false;
+          }, 5000);
+        })
+        .catch((error) => {
+          console.log(error);
+          alert.value = true;
+          alertMessage.value = "Fehlgeschlagen :(";
+          setTimeout(() => {
+            alert.value = false;
+          }, 5000);
+        });
     };
 
     return {
@@ -96,6 +120,8 @@ export default defineComponent({
       standingPlaces,
       name,
       file,
+      alert,
+      alertMessage,
       addField,
     };
   },

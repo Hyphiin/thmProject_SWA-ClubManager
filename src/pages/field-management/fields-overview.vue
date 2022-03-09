@@ -52,54 +52,15 @@
           </q-item>
         </q-list>
       </q-card>
-
-      <!-- <q-card class="swa-card">
-        <q-img
-          :ratio="16 / 9"
-          src="https://sportflaechen.de/wp-content/uploads/2018/01/unsleben-%C2%A9-Rudolf-S%C3%B6der-1280x640.jpg"
-        >
-          <div class="absolute-bottom text-h6">B-Platz</div>
-        </q-img>
-
-        <q-list>
-          <q-item clickable to="/fields/edit-field">
-            <q-item-section avatar>
-              <q-icon color="primary" name="edit" />
-            </q-item-section>
-
-            <q-item-section>
-              <q-item-label>Platz bearbeiten</q-item-label>
-              <q-item-label caption>Ändere die Angaben zum Platz.</q-item-label>
-            </q-item-section>
-          </q-item>
-
-          <q-item clickable>
-            <q-item-section avatar>
-              <q-icon color="red" name="schedule" />
-            </q-item-section>
-
-            <q-item-section>
-              <q-item-label>Trainingszeiten</q-item-label>
-              <q-item-label caption
-                >Weise den Teams Trainigszeiten auf den Plätzen zu</q-item-label
-              >
-            </q-item-section>
-          </q-item>
-
-          <q-item clickable @click="confirmDelete">
-            <q-item-section avatar>
-              <q-icon color="negative" name="delete" />
-            </q-item-section>
-
-            <q-item-section>
-              <q-item-label>Platz löschen</q-item-label>
-              <q-item-label caption>Lösche diesen Platz</q-item-label>
-            </q-item-section>
-          </q-item>
-        </q-list>
-      </q-card> -->
     </q-pull-to-refresh>
   </main-app>
+  <q-dialog v-model="alert">
+    <q-card>
+      <q-card-section>
+        <div class="text-h6">{{ alertMessage }}</div>
+      </q-card-section>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script>
@@ -119,6 +80,9 @@ export default defineComponent({
     const pageName = "Platzverwaltung";
     const addSomething = "add-field";
 
+    const alert = ref(false);
+    const alertMessage = ref("");
+
     const fields = ref([]);
 
     const getFields = async () => {
@@ -132,7 +96,22 @@ export default defineComponent({
     };
 
     const confirmDelete = async (id) => {
-      await deleteDoc(doc(db, "fields", id));
+      await deleteDoc(doc(db, "fields", id))
+        .then(() => {
+          alert.value = true;
+          alertMessage.value = "Plan erfolgreich gelöscht!";
+          setTimeout(() => {
+            alert.value = false;
+          }, 5000);
+        })
+        .catch((error) => {
+          console.log(error);
+          alert.value = true;
+          alertMessage.value = "Fehlgeschlagen :(";
+          setTimeout(() => {
+            alert.value = false;
+          }, 5000);
+        });
       console.log("Dokument erfolgreich entfernt!");
     };
 
@@ -152,6 +131,8 @@ export default defineComponent({
       prevStep,
       pageName,
       addSomething,
+      alert,
+      alertMessage,
       fields,
       confirmDelete,
       refresh,
