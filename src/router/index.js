@@ -6,6 +6,7 @@ import {
   createWebHashHistory,
 } from "vue-router";
 import routes from "./routes";
+import { user } from "src/boot/firebase";
 
 /*
  * If not building with SSR mode, you can

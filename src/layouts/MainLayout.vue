@@ -14,7 +14,7 @@
       </q-toolbar>
     </q-header>
 
-<!--    <q-drawer ref="leftDrawer"
+    <!--    <q-drawer ref="leftDrawer"
     v-model="leftDrawerOpen"
     >
       <div class="toolbar light">
@@ -35,22 +35,21 @@
         </q-item>
       </div>
     </q-drawer>-->
-    <q-drawer
-      v-model="leftDrawerOpen"
-      show-if-above
-      bordered
-    >
+    <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
       <q-list>
-        <q-item-label
-          header
-        >
-          Hauptmenü
-        </q-item-label>
+        <q-item-label header> Hauptmenü </q-item-label>
 
         <EssentialLink
           v-for="link in essentialLinks"
           :key="link.title"
           v-bind="link"
+        />
+        <q-btn
+          :to="{ name: '' }"
+          color="primary"
+          text-color="white"
+          label="Logout"
+          @click="logoutUser()"
         />
       </q-list>
     </q-drawer>
@@ -59,7 +58,7 @@
       <router-view />
     </q-page-container>
 
-<!--    <q-footer elevated>
+    <!--    <q-footer elevated>
       <q-tabs
         dense
         no-caps
@@ -90,49 +89,62 @@
         />
       </q-tabs>
     </q-footer>-->
-
   </q-layout>
 </template>
 
 <script>
 import { defineComponent, ref } from "vue";
 import EssentialLink from "components/EssentialLink.vue";
+import { getAuth, signOut } from "firebase/auth";
 
 const linksList = [
   {
-    title: 'Home',
-    icon: 'home',
-    link: '/home'
+    title: "Home",
+    icon: "home",
+    link: "/home",
   },
   {
-    title: 'Platzverwaltung',
-    caption: 'Verwalte die verfügbaren Plätze',
-    icon: 'stadium',
-    link: '/fields'
+    title: "Platzverwaltung",
+    caption: "Verwalte die verfügbaren Plätze",
+    icon: "stadium",
+    link: "/fields",
   },
   {
-    title: 'Mannschaften',
-    caption: 'Verwalte deine Mannschaften.',
-    icon: 'groups',
-    link: '/fields'
+    title: "Mannschaften",
+    caption: "Verwalte deine Mannschaften.",
+    icon: "groups",
+    link: "/fields",
   },
   {
-    title: 'Schwarzes Brett',
-    caption: 'Informiere deine Mannschaft.',
-    icon: 'dashboard',
-    link: '/fields'
-  }
+    title: "Schwarzes Brett",
+    caption: "Informiere deine Mannschaft.",
+    icon: "dashboard",
+    link: "/fields",
+  },
 ];
 
 export default defineComponent({
   name: "MainLayout",
 
   components: {
-    EssentialLink
+    EssentialLink,
   },
 
   setup() {
     const leftDrawerOpen = ref(false);
+
+    const logoutUser = () => {
+      const auth = getAuth();
+      signOut(auth)
+        .then(() => {
+          // Sign-out successful.
+          console.log("Erfolgreich ausgeloggt!");
+        })
+        .catch((error) => {
+          // An error happened.
+          console.log("Prozess ist fehlgeschlagen!", error);
+        });
+    };
 
     return {
       essentialLinks: linksList,
@@ -140,6 +152,7 @@ export default defineComponent({
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
+      logoutUser,
     };
   },
 });
@@ -147,7 +160,5 @@ export default defineComponent({
 
 <style lang="scss">
 .swa-menu-body {
-
 }
-
 </style>

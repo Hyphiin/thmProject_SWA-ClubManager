@@ -14,12 +14,14 @@
     <br />
 
     <q-btn
+      :to="{ name: 'PageIndex' }"
       color="primary"
       text-color="white"
       label="Login"
       @click="loginUser(email, pw)"
     />
     <q-btn
+      :to="{ name: 'PageIndex' }"
       color="primary"
       text-color="white"
       label="Registrieren"
