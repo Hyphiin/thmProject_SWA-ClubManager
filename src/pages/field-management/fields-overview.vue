@@ -40,7 +40,7 @@
             </q-item-section>
           </q-item>
 
-          <q-item clickable @click="confirmDelete">
+          <q-item clickable @click="confirmDelete(el.id)">
             <q-item-section avatar>
               <q-icon color="negative" name="delete" />
             </q-item-section>
@@ -104,7 +104,7 @@
 
 <script>
 import { defineComponent, ref, onMounted } from "@vue/runtime-core";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { db } from "src/boot/firebase";
 import MainApp from "pages/MainApp";
 
@@ -131,23 +131,9 @@ export default defineComponent({
       });
     };
 
-    const confirmDelete = () => {
-      this.$q
-        .dialog({
-          title: "Löschen",
-          message: `Soll der Platz wirklich gelöscht werden?`,
-          cancel: {
-            label: "Abbruch",
-          },
-          ok: {
-            color: "negative",
-            label: "OK",
-          },
-          persistent: true,
-        })
-        .onOk(() => {
-          console.log("Gelöscht");
-        });
+    const confirmDelete = async (id) => {
+      await deleteDoc(doc(db, "fields", id));
+      console.log("Dokument erfolgreich entfernt!");
     };
 
     const refresh = (done) => {

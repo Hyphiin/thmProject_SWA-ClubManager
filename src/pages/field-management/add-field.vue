@@ -7,15 +7,9 @@
     :showAddButton="showAddButton"
     class="swa-main-app-bracket"
   >
-    <q-pull-to-refresh
-      @refresh="refresh"
-    >
+    <q-pull-to-refresh @refresh="refresh">
       <div class="swa-add-section">
-        <q-input
-          outlined
-          v-model="name"
-          label="Name *"
-        />
+        <q-input outlined v-model="name" label="Name *" />
 
         <q-file outlined v-model="file" counter max-files="1">
           <template v-slot:prepend>
@@ -34,48 +28,78 @@
 
         <q-input
           outlined
-          v-model="seats"
+          v-model.number="seats"
           label="Sitzplätze"
+          type="number"
         />
 
         <q-input
           outlined
-          v-model="standingPlaces"
+          v-model.number="standingPlaces"
           label="Stehplätze"
+          type="number"
         />
 
-        <q-btn color="primary" class="full-width" label="Speichern" icon="done" />
+        <q-btn
+          color="primary"
+          class="full-width"
+          label="Speichern"
+          icon="done"
+          @click="addField"
+        />
       </div>
     </q-pull-to-refresh>
   </main-app>
 </template>
 
 <script>
+import { defineComponent, ref } from "@vue/runtime-core";
+import { collection, addDoc } from "firebase/firestore";
+import { db } from "src/boot/firebase";
 import MainApp from "pages/MainApp";
 
-export default {
+export default defineComponent({
   name: "add-field",
-
   components: {
-    MainApp
+    MainApp,
   },
-  data() {
+  setup() {
+    const showBackButton = true;
+    const prevStep = "fields-overview";
+    const pageName = "Platz hinzufügen";
+    const addSomething = "";
+    const showAddButton = false;
+    const active = true;
+    const seats = ref(0);
+    const standingPlaces = ref(0);
+    const name = ref("");
+    const file = "";
+
+    const addField = async () => {
+      // Add a new document with a generated id.
+      const docRef = await addDoc(collection(db, "fields"), {
+        title: name.value,
+        seats: seats.value,
+        standingRoom: standingPlaces.value,
+      });
+      console.log("Document written with ID: ", docRef.id);
+    };
+
     return {
-      showBackButton: true,
-      prevStep: "fields-overview",
-      pageName: "Platz hinzufügen",
-      addSomething: "",
-      showAddButton: false,
-      active: true,
-      seats: '',
-      standingPlaces: '',
-      name: "",
-      file: ""
-    }
-  }
-}
+      showBackButton,
+      prevStep,
+      pageName,
+      addSomething,
+      showAddButton,
+      active,
+      seats,
+      standingPlaces,
+      name,
+      file,
+      addField,
+    };
+  },
+});
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
