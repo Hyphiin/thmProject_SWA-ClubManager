@@ -93,6 +93,9 @@ export default defineComponent({
         standingRoom: standingPlaces.value,
       })
         .then(() => {
+          name.value = "";
+          seats.value = 0;
+          standingRoom.value = 0;
           alert.value = true;
           alertMessage.value = "Plan erfolgreich hinzugefügt!";
           setTimeout(() => {

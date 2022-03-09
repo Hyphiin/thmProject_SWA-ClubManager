@@ -148,6 +148,7 @@ export default defineComponent({
     const name = ref("");
     const seat = ref(0);
     const standingRoom = ref(0);
+    const active = ref(false);
 
     const getFields = async () => {
       fields.value = [];
@@ -223,6 +224,7 @@ export default defineComponent({
     const refresh = (done) => {
       setTimeout(() => {
         console.log("refresh");
+        getFields();
         done();
       }, 1000);
     };
@@ -245,6 +247,7 @@ export default defineComponent({
       name,
       seat,
       standingRoom,
+      active,
       confirmDelete,
       editFieldFunction,
       refresh,
@@ -253,4 +256,8 @@ export default defineComponent({
 });
 </script>
 
-<style scoped></style>
+<style lang="scss" scoped>
+.swa-edit-section {
+  min-width: 75vw;
+}
+</style>
