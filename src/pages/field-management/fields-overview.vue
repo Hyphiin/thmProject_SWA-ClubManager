@@ -6,14 +6,13 @@
     :addSomething="addSomething"
     class="swa-main-app-bracket"
   >
-    <q-pull-to-refresh
-      @refresh="refresh"
-    >
-      <q-card class="swa-card">
-        <q-img :ratio="16/9" src="https://img.archiexpo.de/images_ae/photo-mg/89030-11620362.webp">
-          <div class="absolute-bottom text-h6">
-            A-Platz
-          </div>
+    <q-pull-to-refresh @refresh="refresh">
+      <q-card v-for="el in fields" :key="el.id" class="swa-card">
+        <q-img
+          :ratio="16 / 9"
+          src="https://img.archiexpo.de/images_ae/photo-mg/89030-11620362.webp"
+        >
+          <div class="absolute-bottom text-h6">{{ el.data.title }}</div>
         </q-img>
 
         <q-list>
@@ -35,7 +34,9 @@
 
             <q-item-section>
               <q-item-label>Trainingszeiten</q-item-label>
-              <q-item-label caption>Weise den Teams Trainigszeiten auf den Plätzen zu</q-item-label>
+              <q-item-label caption
+                >Weise den Teams Trainigszeiten auf den Plätzen zu</q-item-label
+              >
             </q-item-section>
           </q-item>
 
@@ -52,11 +53,12 @@
         </q-list>
       </q-card>
 
-      <q-card class="swa-card">
-        <q-img :ratio="16/9" src="https://sportflaechen.de/wp-content/uploads/2018/01/unsleben-%C2%A9-Rudolf-S%C3%B6der-1280x640.jpg">
-          <div class="absolute-bottom text-h6">
-            B-Platz
-          </div>
+      <!-- <q-card class="swa-card">
+        <q-img
+          :ratio="16 / 9"
+          src="https://sportflaechen.de/wp-content/uploads/2018/01/unsleben-%C2%A9-Rudolf-S%C3%B6der-1280x640.jpg"
+        >
+          <div class="absolute-bottom text-h6">B-Platz</div>
         </q-img>
 
         <q-list>
@@ -78,7 +80,9 @@
 
             <q-item-section>
               <q-item-label>Trainingszeiten</q-item-label>
-              <q-item-label caption>Weise den Teams Trainigszeiten auf den Plätzen zu</q-item-label>
+              <q-item-label caption
+                >Weise den Teams Trainigszeiten auf den Plätzen zu</q-item-label
+              >
             </q-item-section>
           </q-item>
 
@@ -93,56 +97,81 @@
             </q-item-section>
           </q-item>
         </q-list>
-      </q-card>
-
-
+      </q-card> -->
     </q-pull-to-refresh>
   </main-app>
 </template>
 
 <script>
+import { defineComponent, ref, onMounted } from "@vue/runtime-core";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "src/boot/firebase";
 import MainApp from "pages/MainApp";
 
-export default {
+export default defineComponent({
   name: "fields-overview",
   components: {
-    MainApp
+    MainApp,
   },
-  data () {
+  setup(props, context) {
+    const showBackButton = true;
+    const prevStep = "PageIndex";
+    const pageName = "Platzverwaltung";
+    const addSomething = "add-field";
+
+    const fields = ref([]);
+
+    const getFields = async () => {
+      fields.value = [];
+      const querySnapshot = await getDocs(collection(db, "fields"));
+      querySnapshot.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+        console.log(doc.id, " => ", doc.data().title);
+        fields.value.push({ id: doc.id, data: doc.data() });
+      });
+    };
+
+    const confirmDelete = () => {
+      this.$q
+        .dialog({
+          title: "Löschen",
+          message: `Soll der Platz wirklich gelöscht werden?`,
+          cancel: {
+            label: "Abbruch",
+          },
+          ok: {
+            color: "negative",
+            label: "OK",
+          },
+          persistent: true,
+        })
+        .onOk(() => {
+          console.log("Gelöscht");
+        });
+    };
+
+    const refresh = (done) => {
+      setTimeout(() => {
+        console.log("refresh");
+        done();
+      }, 1000);
+    };
+
+    onMounted(() => {
+      getFields();
+    });
+
     return {
-      showBackButton: true,
-      prevStep: "PageIndex",
-      pageName: "Platzverwaltung",
-      addSomething: "add-field",
-    }
+      showBackButton,
+      prevStep,
+      pageName,
+      addSomething,
+      fields,
+      confirmDelete,
+      refresh,
+    };
   },
-  methods: {
-      refresh(done) {
-        setTimeout(() => {
-          console.log("refresh")
-          done()
-        }, 1000)
-      },
-    confirmDelete () {
-      this.$q.dialog({
-        title: 'Löschen',
-        message: `Soll der Platz wirklich gelöscht werden?`,
-        cancel: {
-          label: 'Abbruch'
-        },
-        ok: {
-          color: 'negative',
-          label: 'OK'
-        },
-        persistent: true
-      }).onOk(() => {
-       console.log("Gelöscht")
-      })
-    }
-  }
-}
+});
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
