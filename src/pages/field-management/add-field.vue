@@ -34,6 +34,12 @@
 
         <q-input
           outlined
+          v-model="underground"
+          label="Untergrund"
+        />
+
+        <q-input
+          outlined
           v-model="seats"
           label="Sitzplätze"
         />
@@ -44,7 +50,25 @@
           label="Stehplätze"
         />
 
-        <q-btn color="primary" class="full-width" label="Speichern" icon="done" />
+        <q-input
+          outlined
+          v-model="street"
+          label="Straße"
+        />
+
+        <q-input
+          outlined
+          v-model="plz"
+          label="PLZ"
+        />
+
+        <q-input
+          outlined
+          v-model="city"
+          label="Stadt"
+        />
+
+        <q-btn color="primary" class="full-width" @click="addField" label="Speichern" icon="done" />
       </div>
     </q-pull-to-refresh>
   </main-app>
@@ -70,7 +94,33 @@ export default {
       seats: '',
       standingPlaces: '',
       name: "",
-      file: ""
+      file: "",
+      street: "",
+      underground: "",
+      plz: "",
+      city: "",
+    }
+  },
+  methods: {
+    refresh(done) {
+      setTimeout(() => {
+        console.log("refresh")
+        done()
+      }, 1000)
+    },
+
+    addField () {
+      this.showAddNotify()
+      this.$router.push({ name: 'fields-overview' })
+    },
+
+    showAddNotify () {
+      this.$q.notify({
+        message: `Der Platz wurde erfolgreich erstellt.`,
+        icon: 'done',
+        color: 'green',
+        position: 'top'
+      })
     }
   }
 }

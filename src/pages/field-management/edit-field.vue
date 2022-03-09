@@ -43,6 +43,12 @@
 
         <q-input
           outlined
+          v-model="underground"
+          label="Untergrund"
+        />
+
+        <q-input
+          outlined
           v-model="seats"
           label="Sitzplätze"
         />
@@ -52,7 +58,25 @@
           label="Stehplätze"
         />
 
-        <q-btn color="primary" class="full-width" label="Speichern" icon="done" />
+        <q-input
+          outlined
+          v-model="street"
+          label="Straße"
+        />
+
+        <q-input
+          outlined
+          v-model="plz"
+          label="PLZ"
+        />
+
+        <q-input
+          outlined
+          v-model="city"
+          label="Stadt"
+        />
+
+        <q-btn color="primary" class="full-width" label="Speichern" @click="editField" icon="done" />
       </div>
     </q-pull-to-refresh>
   </main-app>
@@ -76,7 +100,11 @@ export default {
       active: true,
       seats: 1000,
       standingPlaces: 500,
-      name: "A-Platz"
+      name: "A-Platz",
+      street: "HEEGSTRAUCHWEG 3",
+      underground: "Kunstrasen",
+      plz: "35394",
+      city: "GIESSEN",
     }
   },
   methods: {
@@ -85,6 +113,20 @@ export default {
         console.log("refresh")
         done()
       }, 1000)
+    },
+
+    editField () {
+      this.showEditNotify()
+      this.$router.push({ name: 'fields-overview' })
+    },
+
+    showEditNotify () {
+      this.$q.notify({
+        message: `Der Platz wurde erfolgreich aktualisiert.`,
+        icon: 'done',
+        color: 'green',
+        position: 'top'
+      })
     }
   }
 }

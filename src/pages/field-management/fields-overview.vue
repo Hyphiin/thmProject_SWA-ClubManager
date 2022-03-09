@@ -136,7 +136,17 @@ export default {
         },
         persistent: true
       }).onOk(() => {
-       console.log("Gelöscht")
+        console.log("Gelöscht")
+        this.showDeleteNotify()
+      })
+    },
+
+    showDeleteNotify () {
+      this.$q.notify({
+        message: `Der Platz wurde erfolgreich gelöscht.`,
+        icon: 'done',
+        color: 'green',
+        position: 'top'
       })
     }
   }
