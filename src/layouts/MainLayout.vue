@@ -120,7 +120,7 @@ const linksList = [
     title: 'Schwarzes Brett',
     caption: 'Informiere deine Mannschaft.',
     icon: 'dashboard',
-    link: '/fields'
+    link: '/bulletin-board'
   }
 ];
 
