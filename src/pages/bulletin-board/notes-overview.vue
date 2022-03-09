@@ -24,7 +24,7 @@
                       <q-item clickable :to="{name: 'edit-note'}">
                         <q-item-section>Bearbeiten</q-item-section>
                       </q-item>
-                      <q-item clickable>
+                      <q-item clickable @click="confirmDelete">
                         <q-item-section>Löschen</q-item-section>
                       </q-item>
                     </q-list>
@@ -50,10 +50,13 @@
               />
             </div>
           </q-card-section>
+
           <q-separator/>
+
           <q-card-section>
             <q-input
               borderless
+              dense
               placeholder="Schreibe einen Kommentar."
               v-model="newComment"
             >
@@ -64,6 +67,11 @@
           </q-card-section>
         </q-card>
       </div>
+
+      <div v-show="notes.length >= 5" class="swa-load-older-news">
+        <q-btn color="primary" flat icon-right="autorenew" label="Lade ältere Nachrichten" @click="loadOlderNews" />
+      </div>
+
     </q-pull-to-refresh>
   </main-app>
 </template>
@@ -87,7 +95,7 @@ export default {
         {
           title: "Bierverkostung März 2022",
           author: "John Doe",
-          content: " Lorem ipsum dolor sit amet",
+          content: "Lorem ipsum dolor sit amet",
           comments: [
             {
               text: "Moin, wann treffen wir uns?",
@@ -119,7 +127,27 @@ export default {
           content: " Lorem ipsum dolor sit amet",
           comments: [
           ]
-        }
+        },
+        {
+          title: "Pokalfinale April 2022",
+          author: "Karl",
+          content: " Lorem ipsum dolor sit amet",
+          comments: [
+          ]
+        },
+        {
+          title: "Pokalfinale April 2022",
+          author: "Karl",
+          content: " Lorem ipsum dolor sit amet",
+          comments: [
+          ]
+        },{
+          title: "Pokalfinale April 2022",
+          author: "Karl",
+          content: " Lorem ipsum dolor sit amet",
+          comments: [
+          ]
+        },
       ]
     }
   },
@@ -135,10 +163,14 @@ export default {
       console.log(this.notes)
     },
 
+    loadOlderNews() {
+      console.log(this.notes)
+    },
+
     confirmDelete () {
       this.$q.dialog({
         title: 'Löschen',
-        message: `Soll der Platz wirklich gelöscht werden?`,
+        message: `Soll die Notiz wirklich gelöscht werden?`,
         cancel: {
           label: 'Abbruch'
         },
@@ -155,6 +187,10 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+.swa-load-older-news{
+  display: flex;
+  justify-content: center;
+  height: 3rem;
+}
 </style>
