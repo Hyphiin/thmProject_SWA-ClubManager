@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore/lite";
-import { getAuth, onAuthStateChanged, getRedirectResult } from "firebase/auth";
+import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCmiTBHT2nkQFLFrQCUQaM1-ro136iMXa8",
@@ -16,8 +16,5 @@ const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
 const auth = getAuth(app);
-onAuthStateChanged(auth, (user) => {
-  /* check status */
-});
 
-export default { db, auth };
+export { db, auth };
