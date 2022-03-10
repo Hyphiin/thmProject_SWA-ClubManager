@@ -50,19 +50,13 @@
       </div>
     </q-pull-to-refresh>
   </main-app>
-  <q-dialog v-model="alert">
-    <q-card>
-      <q-card-section>
-        <div class="text-h6">{{ alertMessage }}</div>
-      </q-card-section>
-    </q-card>
-  </q-dialog>
 </template>
 
 <script>
 import { defineComponent, ref } from "@vue/runtime-core";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "src/boot/firebase";
+import { Notify } from "quasar";
 import MainApp from "pages/MainApp";
 
 export default defineComponent({
@@ -82,9 +76,6 @@ export default defineComponent({
     const name = ref("");
     const file = "";
 
-    const alert = ref(false);
-    const alertMessage = ref("");
-
     const addField = async () => {
       // Add a new document with a generated id.
       const docRef = await addDoc(collection(db, "fields"), {
@@ -95,20 +86,20 @@ export default defineComponent({
         .then(() => {
           name.value = "";
           seats.value = 0;
-          standingRoom.value = 0;
-          alert.value = true;
-          alertMessage.value = "Plan erfolgreich hinzugefügt!";
-          setTimeout(() => {
-            alert.value = false;
-          }, 5000);
+          standingPlaces.value = 0;
+          Notify.create({
+            message: "Plan erfolgreich hinzugefügt!",
+            color: "positive",
+            position: "top",
+          });
         })
         .catch((error) => {
           console.log(error);
-          alert.value = true;
-          alertMessage.value = "Fehlgeschlagen :(";
-          setTimeout(() => {
-            alert.value = false;
-          }, 5000);
+          Notify.create({
+            message: "Fehlgeschlagen!",
+            color: "negative",
+            position: "top",
+          });
         });
     };
 
@@ -123,8 +114,6 @@ export default defineComponent({
       standingPlaces,
       name,
       file,
-      alert,
-      alertMessage,
       addField,
     };
   },

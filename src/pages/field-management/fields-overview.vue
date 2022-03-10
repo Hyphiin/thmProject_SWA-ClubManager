@@ -104,13 +104,6 @@
       </q-card>
     </q-pull-to-refresh>
   </main-app>
-  <q-dialog v-model="alert">
-    <q-card>
-      <q-card-section>
-        <div class="text-h6">{{ alertMessage }}</div>
-      </q-card-section>
-    </q-card>
-  </q-dialog>
 </template>
 
 <script>
@@ -124,6 +117,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { db } from "src/boot/firebase";
+import { Notify } from "quasar";
 import MainApp from "pages/MainApp";
 
 export default defineComponent({
@@ -136,9 +130,6 @@ export default defineComponent({
     const prevStep = "PageIndex";
     const pageName = "Platzverwaltung";
     const addSomething = "add-field";
-
-    const alert = ref(false);
-    const alertMessage = ref("");
 
     const editField = ref(false);
 
@@ -178,20 +169,20 @@ export default defineComponent({
     const confirmDelete = async (id) => {
       await deleteDoc(doc(db, "fields", id))
         .then(() => {
-          alert.value = true;
-          alertMessage.value = "Plan erfolgreich gelöscht!";
+          Notify.create({
+            message: "Plan erfolgreich gelöscht!",
+            color: "positive",
+            position: "top",
+          });
           getFields();
-          setTimeout(() => {
-            alert.value = false;
-          }, 5000);
         })
         .catch((error) => {
           console.log(error);
-          alert.value = true;
-          alertMessage.value = "Fehlgeschlagen :(";
-          setTimeout(() => {
-            alert.value = false;
-          }, 5000);
+          Notify.create({
+            message: "Fehlgeschlagen!",
+            color: "negative",
+            position: "top",
+          });
         });
     };
 
@@ -204,20 +195,20 @@ export default defineComponent({
         standingRoom: standingRoom,
       })
         .then(() => {
-          alert.value = true;
-          alertMessage.value = "Plan erfolgreich editiert!";
+          Notify.create({
+            message: "Plan erfolgreich editiert!",
+            color: "positive",
+            position: "top",
+          });
           getFields();
-          setTimeout(() => {
-            alert.value = false;
-          }, 5000);
         })
         .catch((error) => {
           console.log(error);
-          alert.value = true;
-          alertMessage.value = "Fehlgeschlagen :(";
-          setTimeout(() => {
-            alert.value = false;
-          }, 5000);
+          Notify.create({
+            message: "Fehlgeschlagen!",
+            color: "negative",
+            position: "top",
+          });
         });
     };
 
@@ -238,8 +229,6 @@ export default defineComponent({
       prevStep,
       pageName,
       addSomething,
-      alert,
-      alertMessage,
       editField,
       fields,
       getField,
