@@ -43,10 +43,20 @@
           <q-card-section>
             {{ appointment.content }}
           </q-card-section>
+
+          <q-separator/>
+          <div class="row swa-vote">
+            <div class="col-6">
+              <q-btn class="swa-cancel full-width" icon="thumb_down" >{{ appointment.cancellation }}</q-btn>
+            </div>
+            <div class="col-6">
+              <q-btn class="swa-commitment full-width" icon="thumb_up">{{ appointment.commitments}}</q-btn>
+            </div>
+          </div>
         </q-card>
       </div>
-      <div v-show="appointments.length >= 4" class="swa-load-older-news">
-        <q-btn color="primary" flat icon-right="autorenew" label="Lade ältere Nachrichten" @click="loadOlderNews"/>
+      <div v-show="appointments.length >= 5" class="swa-load-older">
+        <q-btn color="primary" flat icon-right="autorenew" label="Lade ältere Termine" @click="loadOlderAppointments()"/>
       </div>
     </q-pull-to-refresh>
   </main-app>
@@ -76,6 +86,8 @@ export default {
           dateTime: "12:30",
           team: "1. Herren",
           field: "A-Platz",
+          commitments: 1,
+          cancellation: null
         },
         {
           title: "Pflichtspiel gegen Buseck",
@@ -94,7 +106,25 @@ export default {
           dateTime: "12:30",
           team: "1. Herren",
           field: "A-Platz",
-        }
+        },
+        {
+          title: "Pflichtspiel gegen Buseck",
+          content: "Treffen eine Stunde früher.",
+          category: "Pflichtspiel",
+          date: "2022-04-02",
+          dateTime: "12:30",
+          team: "A-Jugend",
+          field: "A-Platz",
+        },
+        {
+          title: "Testspiel gegen Reiskirchen",
+          content: "Treffen eine Stunde früher.",
+          category: "Testspiel",
+          date: "2022-04-02",
+          dateTime: "12:30",
+          team: "2. Herren",
+          field: "B-Platz",
+        },
       ],
       events: this.appointments
     }
@@ -106,6 +136,7 @@ export default {
         done()
       }, 1000)
     },
+
     confirmDelete () {
       this.$q.dialog({
         title: 'Löschen',
@@ -144,5 +175,9 @@ export default {
   .q-btn__content{
     color: $primary;
   }
+}
+
+.swa-vote .q-icon {
+  margin-right: .3rem;
 }
 </style>
