@@ -84,8 +84,18 @@
 
                 <q-input outlined v-model="name" label="Name *" />
 
-                <q-input outlined v-model="seat" label="Sitzplätze" />
-                <q-input outlined v-model="standingRoom" label="Stehplätze" />
+                <q-input outlined v-model.number="seat" label="Sitzplätze" />
+                <q-input
+                  outlined
+                  v-model.number="standingRoom"
+                  label="Stehplätze"
+                />
+
+                <q-input outlined v-model="street" label="Straße" />
+
+                <q-input outlined v-model="plz" label="PLZ" />
+
+                <q-input outlined v-model="city" label="Stadt" />
               </div>
             </q-card-section>
 
@@ -95,7 +105,17 @@
                 flat
                 label="Speichern"
                 color="primary"
-                @click="editFieldFunction(fieldId, name, seat, standingRoom)"
+                @click="
+                  editFieldFunction(
+                    fieldId,
+                    name,
+                    seat,
+                    standingRoom,
+                    street,
+                    plz,
+                    city
+                  )
+                "
                 v-close-popup
               />
             </q-card-actions>
@@ -116,7 +136,7 @@ import {
   getDoc,
   updateDoc,
 } from "firebase/firestore";
-import { db } from "src/boot/firebase";
+import { db, auth } from "src/boot/firebase";
 import { Notify } from "quasar";
 import MainApp from "pages/MainApp";
 
@@ -139,7 +159,12 @@ export default defineComponent({
     const name = ref("");
     const seat = ref(0);
     const standingRoom = ref(0);
+    const street = ref("");
+    const plz = ref("");
+    const city = ref("");
     const active = ref(false);
+
+    const user = ref("");
 
     const getFields = async () => {
       fields.value = [];
@@ -162,8 +187,12 @@ export default defineComponent({
 
       fieldId.value = docSnap.id;
       name.value = docSnap.data().title;
-      seat.value = docSnap.data().seat;
+      seat.value = docSnap.data().seats;
       standingRoom.value = docSnap.data().standingRoom;
+      street.value = docSnap.data().street;
+      plz.value = docSnap.data().plz;
+      city.value = docSnap.data().city;
+      user.value = docSnap.data().user;
     };
 
     const confirmDelete = async (id) => {
@@ -186,13 +215,27 @@ export default defineComponent({
         });
     };
 
-    const editFieldFunction = async (id, name, seat, standingRoom) => {
+    const editFieldFunction = async (
+      id,
+      name,
+      seat,
+      standingRoom,
+      street,
+      plz,
+      city
+    ) => {
       const field = doc(db, "fields", id);
+      const currentUser = auth.currentUser.uid;
 
       await updateDoc(field, {
         title: name,
-        seat: seat,
+        seats: seat,
         standingRoom: standingRoom,
+        street: street,
+        plz: plz,
+        city: city,
+        user: user.value,
+        edited: currentUser,
       })
         .then(() => {
           Notify.create({
@@ -236,6 +279,9 @@ export default defineComponent({
       name,
       seat,
       standingRoom,
+      street,
+      plz,
+      city,
       active,
       confirmDelete,
       editFieldFunction,

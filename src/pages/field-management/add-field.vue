@@ -40,6 +40,12 @@
           type="number"
         />
 
+        <q-input outlined v-model="street" label="Straße" />
+
+        <q-input outlined v-model="plz" label="PLZ" />
+
+        <q-input outlined v-model="city" label="Stadt" />
+
         <q-btn
           color="primary"
           class="full-width"
@@ -55,7 +61,7 @@
 <script>
 import { defineComponent, ref } from "@vue/runtime-core";
 import { collection, addDoc } from "firebase/firestore";
-import { db } from "src/boot/firebase";
+import { db, auth } from "src/boot/firebase";
 import { Notify } from "quasar";
 import MainApp from "pages/MainApp";
 
@@ -73,8 +79,12 @@ export default defineComponent({
     const active = true;
     const seats = ref(0);
     const standingPlaces = ref(0);
+    const street = ref("");
+    const plz = ref("00000");
+    const city = ref("");
     const name = ref("");
     const file = "";
+    const user = ref(auth.currentUser.uid);
 
     const addField = async () => {
       // Add a new document with a generated id.
@@ -82,11 +92,18 @@ export default defineComponent({
         title: name.value,
         seats: seats.value,
         standingRoom: standingPlaces.value,
+        street: street.value,
+        plz: plz.value,
+        city: city.value,
+        user: user.value,
       })
         .then(() => {
           name.value = "";
           seats.value = 0;
           standingPlaces.value = 0;
+          street.value = "";
+          plz.value = "";
+          city.value = "";
           Notify.create({
             message: "Plan erfolgreich hinzugefügt!",
             color: "positive",
@@ -112,6 +129,9 @@ export default defineComponent({
       active,
       seats,
       standingPlaces,
+      street,
+      plz,
+      city,
       name,
       file,
       addField,
