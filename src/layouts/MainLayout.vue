@@ -111,16 +111,16 @@ const linksList = [
     link: '/fields'
   },
   {
-    title: 'Mannschaften',
-    caption: 'Verwalte deine Mannschaften.',
-    icon: 'groups',
-    link: '/fields'
-  },
-  {
     title: 'Schwarzes Brett',
     caption: 'Informiere deine Mannschaft.',
     icon: 'dashboard',
     link: '/bulletin-board'
+  },
+  {
+    title: 'Kalender',
+    caption: 'Informiere deine Mannschaft.',
+    icon: 'event',
+    link: '/calender'
   }
 ];
 

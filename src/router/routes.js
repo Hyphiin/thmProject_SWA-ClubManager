@@ -43,6 +43,16 @@ const routes = [
         name: "edit-note",
         component: () => import("pages/bulletin-board/edit-note")
       },
+      {
+        path: "calender",
+        name: "appointment-overview",
+        component: () => import("pages/calender/appointment-overview")
+      },
+      {
+        path: "calender/add-appointment",
+        name: "add-appointment",
+        component: () => import("pages/calender/add-appointment")
+      },
     ],
   },
 
