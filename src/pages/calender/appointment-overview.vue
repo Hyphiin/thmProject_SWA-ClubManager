@@ -9,66 +9,45 @@
     <q-pull-to-refresh
       @refresh="refresh"
     >
-        <div class="q-gutter-y-md">
-            <q-tabs
-              v-model="tab"
-              dense
-              class="text-grey"
-              active-color="primary"
-              indicator-color="primary"
-              align="justify"
-            >
-              <q-tab name="detail" label="Listenansicht" />
-              <q-tab name="calender" label="Kalenderansicht" />
-            </q-tabs>
+      <div v-for="(appointment, i) in this.appointments" :key="`appointNumber_${i}`">
+        <q-card bordered class="swa-card"
+                :class="[appointment.category === 'Testspiel'? 'swa-test' : '', appointment.category === 'Pflichtspiel'? 'swa-pflicht' : '']">
+          <q-card-section>
+            <div class="row items-center no-wrap">
+              <div class="col">
+                <div class="text-h6">{{ appointment.title }}</div>
+                <div class="text-h6">{{ appointment.date }}</div>
+                <div class="text-h6">{{ appointment.dateTime }} Uhr</div>
+                <div class="text-subtitle2">für {{ appointment.team }}</div>
+                <div class="text-subtitle2">auf dem {{ appointment.field }}</div>
+              </div>
+              <div class="col-auto">
+                <q-btn color="grey-7" round flat icon="more_vert">
+                  <q-menu cover auto-close>
+                    <q-list>
+                      <q-item clickable :to="{name: 'edit-appointment'}">
+                        <q-item-section>Bearbeiten</q-item-section>
+                      </q-item>
+                      <q-item clickable @click="confirmDelete">
+                        <q-item-section>Löschen</q-item-section>
+                      </q-item>
+                    </q-list>
+                  </q-menu>
+                </q-btn>
+              </div>
+            </div>
+          </q-card-section>
 
-            <q-tab-panels v-model="tab" animated>
-              <q-tab-panel name="detail">
-                <div v-for="(appointment, i) in this.appointments" :key="`appointNumber_${i}`">
-                  <q-card bordered class="swa-card" :class="[appointment.category === 'Testspiel'? 'swa-test' : '', appointment.category === 'Pflichtspiel'? 'swa-pflicht' : '']">
-                    <q-card-section>
-                      <div class="row items-center no-wrap">
-                        <div class="col">
-                          <div class="text-h6">{{ appointment.title }}</div>
-                          <div class="text-h6">{{ appointment.date }}</div>
-                          <div class="text-h6">{{ appointment.dateTime }} Uhr</div>
-                          <div class="text-subtitle2">für {{ appointment.team }}</div>
-                          <div class="text-subtitle2">auf dem {{ appointment.field }}</div>
-                        </div>
-                        <div class="col-auto">
-                          <q-btn color="grey-7" round flat icon="more_vert">
-                            <q-menu cover auto-close>
-                              <q-list>
-                                <q-item clickable :to="{name: 'edit-appointment'}">
-                                  <q-item-section>Bearbeiten</q-item-section>
-                                </q-item>
-                                <q-item clickable @click="confirmDelete">
-                                  <q-item-section>Löschen</q-item-section>
-                                </q-item>
-                              </q-list>
-                            </q-menu>
-                          </q-btn>
-                        </div>
-                      </div>
-                    </q-card-section>
+          <q-separator/>
 
-                    <q-separator/>
-
-                    <q-card-section>
-                      {{ appointment.content }}
-                    </q-card-section>
-                  </q-card>
-                </div>
-              </q-tab-panel>
-
-              <q-tab-panel name="calender">
-                <q-date
-                  :events="events"
-                  event-color="orange"
-                />
-              </q-tab-panel>
-            </q-tab-panels>
-        </div>
+          <q-card-section>
+            {{ appointment.content }}
+          </q-card-section>
+        </q-card>
+      </div>
+      <div v-show="appointments.length >= 4" class="swa-load-older-news">
+        <q-btn color="primary" flat icon-right="autorenew" label="Lade ältere Nachrichten" @click="loadOlderNews"/>
+      </div>
     </q-pull-to-refresh>
   </main-app>
 </template>
@@ -147,17 +126,23 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .q-tab-panel{
   padding: 0;
 }
 .swa-test{
   background-color: $primary;
   color: $white;
+  .q-btn__content {
+    color: $white;
+  }
 }
 
 .swa-pflicht {
   background-color: $white;
   color: $primary;
+  .q-btn__content{
+    color: $primary;
+  }
 }
 </style>

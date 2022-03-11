@@ -53,6 +53,11 @@ const routes = [
         name: "add-appointment",
         component: () => import("pages/calender/add-appointment")
       },
+      {
+        path: "calender/edit-appointment",
+        name: "edit-appointment",
+        component: () => import("pages/calender/edit-appointment")
+      },
     ],
   },
 

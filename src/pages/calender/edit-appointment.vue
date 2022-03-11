@@ -9,7 +9,7 @@
     <q-pull-to-refresh
       @refresh="refresh"
     >
-      <div class="swa-add-section">
+      <div class="swa-edit-section">
         <q-input
           outlined
           v-model="title"
@@ -73,7 +73,7 @@
 import MainApp from "pages/MainApp";
 
 export default {
-  name: "add-appointment",
+  name: "edit-appointment",
   components: {
     MainApp
   },
@@ -81,21 +81,21 @@ export default {
     return {
       showBackButton: true,
       prevStep: "appointment-overview",
-      pageName: "Termin hinzufügen",
+      pageName: "Termin bearbeiten",
       showAddButton: false,
-      title:"",
-      content:"",
-      category: "",
+      title:"Testspiel gegen Friedberg",
+      content:"Lorem ipsum dolor sit amet",
+      category: "Testspiel",
       categories: [
         "Testspiel", "Pflichtspiel", "Training"
       ],
-      date: "",
-      dateTime: "",
-      team: null,
+      date: "2022-03-12",
+      dateTime: "11:20",
+      team: "1. Herren",
       teams: [
         "1. Herren", "2. Herren", "A-Jugend", "B-Jugend"
       ],
-      field: null,
+      field: "A-Platz",
       fields: [
         "A-Platz", "B-Platz"
       ]

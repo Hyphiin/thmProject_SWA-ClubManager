@@ -34,7 +34,7 @@
             </q-item-section>
 
             <q-item-section>
-              <q-item-label>Trainingszeiten</q-item-label>
+              <q-item-label>Platzbelegung</q-item-label>
               <q-item-label caption>Weise den Teams Trainigszeiten auf den Plätzen zu</q-item-label>
             </q-item-section>
           </q-item>
@@ -60,7 +60,7 @@
         </q-img>
 
         <q-list>
-          <q-item clickable to="/fields/edit-field">
+          <q-item clickable :to="{name: 'edit-field'}">
             <q-item-section avatar>
               <q-icon color="primary" name="edit" />
             </q-item-section>
@@ -71,13 +71,13 @@
             </q-item-section>
           </q-item>
 
-          <q-item clickable>
+          <q-item clickable :to="{ name: 'add-appointment' }">
             <q-item-section avatar>
               <q-icon color="red" name="schedule" />
             </q-item-section>
 
             <q-item-section>
-              <q-item-label>Trainingszeiten</q-item-label>
+              <q-item-label>Platzbelegung</q-item-label>
               <q-item-label caption>Weise den Teams Trainigszeiten auf den Plätzen zu</q-item-label>
             </q-item-section>
           </q-item>

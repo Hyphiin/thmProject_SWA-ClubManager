@@ -68,7 +68,7 @@
         </q-card>
       </div>
 
-      <div v-show="notes.length >= 5" class="swa-load-older-news">
+      <div v-show="notes.length >= 4" class="swa-load-older-news">
         <q-btn color="primary" flat icon-right="autorenew" label="Lade ältere Nachrichten" @click="loadOlderNews" />
       </div>
 
