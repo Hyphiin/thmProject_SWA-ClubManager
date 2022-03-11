@@ -94,6 +94,7 @@
 
 <script>
 import { defineComponent, ref } from "vue";
+import { useRouter } from "vue-router";
 import EssentialLink from "components/EssentialLink.vue";
 import { getAuth, signOut } from "firebase/auth";
 
@@ -133,16 +134,28 @@ export default defineComponent({
   setup() {
     const leftDrawerOpen = ref(false);
 
+    const router = useRouter();
+
     const logoutUser = () => {
       const auth = getAuth();
       signOut(auth)
         .then(() => {
           // Sign-out successful.
           console.log("Erfolgreich ausgeloggt!");
+          router.push({ name: "login" });
+          Notify.create({
+            message: `Auf Wiedersehen!`,
+            color: "positive",
+            position: "top",
+          });
         })
         .catch((error) => {
           // An error happened.
-          console.log("Prozess ist fehlgeschlagen!", error);
+          Notify.create({
+            message: `${error}`,
+            color: "positive",
+            position: "top",
+          });
         });
     };
 

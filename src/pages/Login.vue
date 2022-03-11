@@ -14,14 +14,12 @@
     <br />
 
     <q-btn
-      :to="{ name: 'PageIndex' }"
       color="primary"
       text-color="white"
       label="Login"
       @click="loginUser(email, pw)"
     />
     <q-btn
-      :to="{ name: 'PageIndex' }"
       color="primary"
       text-color="white"
       label="Registrieren"
@@ -32,6 +30,8 @@
 
 <script>
 import { defineComponent, ref } from "@vue/runtime-core";
+import { useRouter } from "vue-router";
+import { Notify } from "quasar";
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -44,19 +44,29 @@ export default defineComponent({
     const email = ref("");
     const pw = ref("");
 
+    const router = useRouter();
+
     const createUser = (email, password) => {
       const auth = getAuth();
       createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           // Signed in
           const user = userCredential.user;
-          console.log("Erfolgreich registriert als: ", user);
+          Notify.create({
+            message: `Willkommen ${user.email}!`,
+            color: "positive",
+            position: "top",
+          });
+          router.replace({ name: "PageIndex" });
           // ...
         })
         .catch((error) => {
-          const errorCode = error.code;
           const errorMessage = error.message;
-          console.log("Registrierung fehlgeschlagen!", errorCode, errorMessage);
+          Notify.create({
+            message: `${errorMessage}`,
+            color: "negative",
+            position: "top",
+          });
           // ..
         });
     };
@@ -67,13 +77,21 @@ export default defineComponent({
         .then((userCredential) => {
           // Signed in
           const user = userCredential.user;
-          console.log("Erfolgreich eingeloggt als: ", user);
+          Notify.create({
+            message: `Willkommen ${user.displayName}!`,
+            color: "positive",
+            position: "top",
+          });
+          router.replace({ name: "PageIndex" });
           // ...
         })
         .catch((error) => {
-          const errorCode = error.code;
           const errorMessage = error.message;
-          console.log("Loginproess gescheitert!");
+          Notify.create({
+            message: `${errorMessage}`,
+            color: "negative",
+            position: "top",
+          });
         });
     };
 

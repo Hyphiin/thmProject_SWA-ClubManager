@@ -17,4 +17,17 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-export { db, auth };
+const user = () => {
+  return new Promise((resolve, reject) => {
+    const unsubscribe = onAuthStateChanged(
+      auth,
+      (userFirebase) => {
+        unsubscribe();
+        resolve(userFirebase);
+      },
+      reject
+    );
+  });
+};
+
+export { db, auth, user };
