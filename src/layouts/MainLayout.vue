@@ -13,11 +13,7 @@
         />
       </q-toolbar>
     </q-header>
-    <q-drawer
-      v-model="leftDrawerOpen"
-      show-if-above
-      bordered
-    >
+    <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
       <q-list>
         <q-item-label header> Hauptmenü </q-item-label>
 
@@ -47,6 +43,7 @@ import { defineComponent, ref } from "vue";
 import { useRouter } from "vue-router";
 import EssentialLink from "components/EssentialLink.vue";
 import { getAuth, signOut } from "firebase/auth";
+import { Notify } from "quasar";
 
 const linksList = [
   {
@@ -61,17 +58,17 @@ const linksList = [
     link: "/fields",
   },
   {
-    title: 'Schwarzes Brett',
-    caption: 'Informiere deine Mannschaft.',
-    icon: 'dashboard',
-    link: '/bulletin-board'
+    title: "Schwarzes Brett",
+    caption: "Informiere deine Mannschaft.",
+    icon: "dashboard",
+    link: "/bulletin-board",
   },
   {
-    title: 'Kalender',
-    caption: 'Informiere deine Mannschaft.',
-    icon: 'event',
-    link: '/calender'
-  }
+    title: "Kalender",
+    caption: "Informiere deine Mannschaft.",
+    icon: "event",
+    link: "/calender",
+  },
 ];
 
 export default defineComponent({

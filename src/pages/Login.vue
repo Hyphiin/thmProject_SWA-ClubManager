@@ -19,12 +19,12 @@
       label="Login"
       @click="loginUser(email, pw)"
     />
-    <q-btn
+    <!-- <q-btn
       color="primary"
       text-color="white"
       label="Registrieren"
       @click="createUser(email, pw)"
-    />
+    /> -->
   </div>
 </template>
 
@@ -46,30 +46,30 @@ export default defineComponent({
 
     const router = useRouter();
 
-    const createUser = (email, password) => {
-      const auth = getAuth();
-      createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          // Signed in
-          const user = userCredential.user;
-          Notify.create({
-            message: `Willkommen ${user.email}!`,
-            color: "positive",
-            position: "top",
-          });
-          router.replace({ name: "PageIndex" });
-          // ...
-        })
-        .catch((error) => {
-          const errorMessage = error.message;
-          Notify.create({
-            message: `${errorMessage}`,
-            color: "negative",
-            position: "top",
-          });
-          // ..
-        });
-    };
+    // const createUser = (email, password) => {
+    //   const auth = getAuth();
+    //   createUserWithEmailAndPassword(auth, email, password)
+    //     .then((userCredential) => {
+    //       // Signed in
+    //       const user = userCredential.user;
+    //       Notify.create({
+    //         message: `Willkommen ${user.email}!`,
+    //         color: "positive",
+    //         position: "top",
+    //       });
+    //       router.replace({ name: "PageIndex" });
+    //       // ...
+    //     })
+    //     .catch((error) => {
+    //       const errorMessage = error.message;
+    //       Notify.create({
+    //         message: `${errorMessage}`,
+    //         color: "negative",
+    //         position: "top",
+    //       });
+    //       // ..
+    //     });
+    // };
 
     const loginUser = (email, password) => {
       const auth = getAuth();
@@ -78,7 +78,7 @@ export default defineComponent({
           // Signed in
           const user = userCredential.user;
           Notify.create({
-            message: `Willkommen ${user.displayName}!`,
+            message: `Willkommen ${user.email}!`,
             color: "positive",
             position: "top",
           });
@@ -98,7 +98,7 @@ export default defineComponent({
     return {
       email,
       pw,
-      createUser,
+      // createUser,
       loginUser,
     };
   },
