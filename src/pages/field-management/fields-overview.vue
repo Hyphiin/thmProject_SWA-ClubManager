@@ -33,10 +33,8 @@
             </q-item-section>
 
             <q-item-section>
-              <q-item-label>Trainingszeiten</q-item-label>
-              <q-item-label caption
-                >Weise den Teams Trainigszeiten auf den Plätzen zu</q-item-label
-              >
+              <q-item-label>Platzbelegung</q-item-label>
+              <q-item-label caption>Weise den Teams Trainigszeiten auf den Plätzen zu</q-item-label>
             </q-item-section>
           </q-item>
 

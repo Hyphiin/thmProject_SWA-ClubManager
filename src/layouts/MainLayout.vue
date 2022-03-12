@@ -13,29 +13,11 @@
         />
       </q-toolbar>
     </q-header>
-
-    <!--    <q-drawer ref="leftDrawer"
-    v-model="leftDrawerOpen"
+    <q-drawer
+      v-model="leftDrawerOpen"
+      show-if-above
+      bordered
     >
-      <div class="toolbar light">
-        <q-toolbar-title :padding="1">
-          Menü
-        </q-toolbar-title>
-      </div>
-
-      <div class="swa-menu-body">
-        <q-item clickable to="/fields">
-          <q-item-section avatar>
-            <q-icon color="negative" name="delete" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>Platzverwaltung</q-item-label>
-            <q-item-label caption>Verwalte die verfügbaren Plätze</q-item-label>
-          </q-item-section>
-        </q-item>
-      </div>
-    </q-drawer>-->
-    <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
       <q-list>
         <q-item-label header> Hauptmenü </q-item-label>
 
@@ -57,38 +39,6 @@
     <q-page-container>
       <router-view />
     </q-page-container>
-
-    <!--    <q-footer elevated>
-      <q-tabs
-        dense
-        no-caps
-        align="justify"
-        narrow-indicator
-        active-color="primary"
-        indicator-color="bg-white"
-      >
-        <q-route-tab
-          icon="shopping_bag"
-          :to="{name: 'products'}"
-          label="Produkte"
-        />
-        <q-route-tab
-          icon="category"
-          :to="{name: 'categories'}"
-          label="Kategorie"
-        />
-        <q-route-tab
-          icon="supervisor_account"
-          :to="{name: 'customers'}"
-          label="Kunden"
-        />
-        <q-route-tab
-          icon="list"
-          :to="{name: 'orders'}"
-          label="Bestellungen"
-        />
-      </q-tabs>
-    </q-footer>-->
   </q-layout>
 </template>
 
@@ -111,17 +61,17 @@ const linksList = [
     link: "/fields",
   },
   {
-    title: "Mannschaften",
-    caption: "Verwalte deine Mannschaften.",
-    icon: "groups",
-    link: "/fields",
+    title: 'Schwarzes Brett',
+    caption: 'Informiere deine Mannschaft.',
+    icon: 'dashboard',
+    link: '/bulletin-board'
   },
   {
-    title: "Schwarzes Brett",
-    caption: "Informiere deine Mannschaft.",
-    icon: "dashboard",
-    link: "/fields",
-  },
+    title: 'Kalender',
+    caption: 'Informiere deine Mannschaft.',
+    icon: 'event',
+    link: '/calender'
+  }
 ];
 
 export default defineComponent({
