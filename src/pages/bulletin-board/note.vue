@@ -42,7 +42,7 @@
 
     <q-separator />
 
-    <q-card-section>
+    <q-card-section v-if="commentMode">
       <q-input
         borderless
         dense
@@ -87,7 +87,7 @@ import { defineComponent, ref } from "@vue/runtime-core";
 
 export default defineComponent({
   name: "Note",
-  props: ["id", "creatorId", "title", "content", "comments"],
+  props: ["id", "creatorId", "title", "content", "comments", "commentMode"],
   setup(props, context) {
     const newComment = ref("");
 

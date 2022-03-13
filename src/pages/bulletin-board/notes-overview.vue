@@ -8,84 +8,19 @@
   >
     <q-pull-to-refresh v-if="notes.length > 0" @refresh="refresh">
       <div v-for="(note, i) in notes" :key="`noteNumber_${i}`">
-        <!-- <q-card bordered class="swa-card">
-          <q-card-section>
-            <div class="row items-center no-wrap">
-              <div class="col">
-                <div class="text-h6">{{ note.title }}</div>
-                <div class="text-subtitle2">von {{ note.creatorID }}</div>
-              </div>
-              <div class="col-auto">
-                <q-btn color="grey-7" round flat icon="more_vert">
-                  <q-menu cover auto-close>
-                    <q-list>
-                      <q-item clickable @click="getNote(note.id)">
-                        <q-item-section>Bearbeiten</q-item-section>
-                      </q-item>
-                      <q-item clickable @click="confirmDelete(note.id)">
-                        <q-item-section>Löschen</q-item-section>
-                      </q-item>
-                    </q-list>
-                  </q-menu>
-                </q-btn>
-              </div>
-            </div>
-          </q-card-section>
-
-          <q-separator />
-
-          <q-card-section>
-            {{ note.content }}
-          </q-card-section>
-
-          <q-separator v-show="note.comments.length !== 0" />
-          <q-card-section v-show="note.comments.length !== 0">
-            <div
-              v-for="(comment, i) in note.comments"
-              :key="`commentNumber_${i}`"
-            >
-              <q-chat-message
-                :name="comment.author"
-                :text="[comment.text]"
-                :sent="false"
-              />
-            </div>
-          </q-card-section>
-
-          <q-separator />
-
-          <q-card-section>
-            <q-input
-              borderless
-              dense
-              placeholder="Schreibe einen Kommentar."
-              v-model="newComment"
-            >
-              <template v-slot:after>
-                <q-btn
-                  round
-                  dense
-                  flat
-                  icon="send"
-                  @click="addNewComment(note.id)"
-                />
-              </template>
-            </q-input>
-          </q-card-section>
-        </q-card> -->
         <Note
           :id="note.id"
           :creator-id="note.creatorID"
           :title="note.title"
           :content="note.content"
           :comments="note.comments"
+          :comment-mode="true"
           @get-note="getNote($event)"
           @confirm-delete="confirmDelete($event)"
           @add-new-comment="addNewComment($event)"
           @edit-note="editNoteFunction($event)"
         />
       </div>
-
       <div v-show="notes.length >= 5" class="swa-load-older">
         <q-btn
           color="primary"
@@ -97,30 +32,6 @@
       </div>
     </q-pull-to-refresh>
   </main-app>
-  <!-- <q-dialog v-model="editNote" persistent>
-    <q-card>
-      <q-card-section class="row items-center">
-        <div class="swa-edit-section">
-          <div class="swa-edit-section">
-            <q-input outlined v-model="title" label="Titel *" />
-
-            <q-input v-model="content" outlined autogrow />
-          </div>
-        </div>
-      </q-card-section>
-
-      <q-card-actions align="right">
-        <q-btn flat label="Abbrechen" color="primary" v-close-popup />
-        <q-btn
-          flat
-          label="Speichern"
-          color="primary"
-          @click="editNoteFunction(noteId, title, content)"
-          v-close-popup
-        />
-      </q-card-actions>
-    </q-card>
-  </q-dialog> -->
 </template>
 
 <script>
@@ -185,7 +96,6 @@ export default defineComponent({
       );
       querySnapshot.forEach(async (doc) => {
         // doc.data() is never undefined for query doc snapshots
-        console.log(doc.id, " => ", doc.data().title);
         const comments = await getComments(doc.id);
         notes.value.push({
           id: doc.id,
@@ -195,7 +105,6 @@ export default defineComponent({
           comments: comments,
         });
       });
-      console.log(notes.value);
     };
 
     const getComments = async (noteID) => {
@@ -206,8 +115,6 @@ export default defineComponent({
       const comments = [];
       querySnapshot2.forEach((doc2) => {
         // doc.data() is never undefined for query doc snapshots
-        console.log(doc2.id, " => ", doc2.data().text);
-        console.log(noteID, doc2.data().noteID);
         if (noteID === doc2.data().noteID) {
           comments.push({
             text: doc2.data().text,
@@ -228,7 +135,6 @@ export default defineComponent({
         timestamp: Date.now(),
       })
         .then(() => {
-          // newComment.value = "";
           getNotes();
           Notify.create({
             message: "Kommentar erfolgreich hinzugefügt!",
@@ -288,11 +194,7 @@ export default defineComponent({
 
       const docSnap = await getDoc(note);
 
-      console.log(docSnap);
-
       editNote.value = true;
-
-      console.log(docSnap.data());
 
       noteId.value = docSnap.id;
       title.value = docSnap.data().title;
@@ -301,10 +203,8 @@ export default defineComponent({
     };
 
     const editNoteFunction = async (temp) => {
-      console.log("hallo");
       const note = doc(db, "bulletin-boards", temp.id);
       const currentUser = auth.currentUser.uid;
-      console.log(currentUser, creator.value);
       if (currentUser === creator.value) {
         await updateDoc(note, {
           title: temp.title,
@@ -345,12 +245,6 @@ export default defineComponent({
       prevStep,
       pageName,
       addSomething,
-      newComment,
-      newComments,
-      editNote,
-      title,
-      content,
-      noteId,
       notes,
       refresh,
       addNewComment,

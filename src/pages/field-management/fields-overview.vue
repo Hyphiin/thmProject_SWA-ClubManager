@@ -34,7 +34,9 @@
 
             <q-item-section>
               <q-item-label>Platzbelegung</q-item-label>
-              <q-item-label caption>Weise den Teams Trainigszeiten auf den Plätzen zu</q-item-label>
+              <q-item-label caption
+                >Weise den Teams Trainigszeiten auf den Plätzen zu</q-item-label
+              >
             </q-item-section>
           </q-item>
 
@@ -169,7 +171,6 @@ export default defineComponent({
       const querySnapshot = await getDocs(collection(db, "fields"));
       querySnapshot.forEach((doc) => {
         // doc.data() is never undefined for query doc snapshots
-        console.log(doc.id, " => ", doc.data().title);
         fields.value.push({ id: doc.id, data: doc.data() });
       });
     };
@@ -178,8 +179,6 @@ export default defineComponent({
       const field = doc(db, "fields", id);
 
       const docSnap = await getDoc(field);
-
-      console.log(docSnap);
 
       editField.value = true;
 
