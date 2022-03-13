@@ -6,9 +6,9 @@
     :addSomething="addSomething"
     class="swa-main-app-bracket"
   >
-    <q-pull-to-refresh @refresh="refresh">
+    <q-pull-to-refresh v-if="notes.length > 0" @refresh="refresh">
       <div v-for="(note, i) in notes" :key="`noteNumber_${i}`">
-        <q-card bordered class="swa-card">
+        <!-- <q-card bordered class="swa-card">
           <q-card-section>
             <div class="row items-center no-wrap">
               <div class="col">
@@ -72,7 +72,18 @@
               </template>
             </q-input>
           </q-card-section>
-        </q-card>
+        </q-card> -->
+        <Note
+          :id="note.id"
+          :creator-id="note.creatorID"
+          :title="note.title"
+          :content="note.content"
+          :comments="note.comments"
+          @get-note="getNote($event)"
+          @confirm-delete="confirmDelete($event)"
+          @add-new-comment="addNewComment($event)"
+          @edit-note="editNoteFunction($event)"
+        />
       </div>
 
       <div v-show="notes.length >= 5" class="swa-load-older">
@@ -86,7 +97,7 @@
       </div>
     </q-pull-to-refresh>
   </main-app>
-  <q-dialog v-model="editNote" persistent>
+  <!-- <q-dialog v-model="editNote" persistent>
     <q-card>
       <q-card-section class="row items-center">
         <div class="swa-edit-section">
@@ -109,12 +120,13 @@
         />
       </q-card-actions>
     </q-card>
-  </q-dialog>
+  </q-dialog> -->
 </template>
 
 <script>
 import { defineComponent, ref, onMounted } from "@vue/runtime-core";
 import MainApp from "pages/MainApp";
+import Note from "pages/bulletin-board/note.vue";
 import {
   collection,
   getDocs,
@@ -134,6 +146,7 @@ export default defineComponent({
   name: "notes-overview",
   components: {
     MainApp,
+    Note,
   },
   setup() {
     const showBackButton = ref(true);
@@ -144,6 +157,8 @@ export default defineComponent({
     const notes = ref([]);
     const user = ref(auth.currentUser.uid);
     const newComment = ref("");
+
+    const newComments = ref([]);
 
     const editNote = ref(false);
     const title = ref("");
@@ -180,6 +195,7 @@ export default defineComponent({
           comments: comments,
         });
       });
+      console.log(notes.value);
     };
 
     const getComments = async (noteID) => {
@@ -203,16 +219,16 @@ export default defineComponent({
       return comments;
     };
 
-    const addNewComment = async (noteID) => {
+    const addNewComment = async (temp) => {
       // Add a new document with a generated id.
       const docRef = await addDoc(collection(db, "comments"), {
         author: user.value,
-        text: newComment.value,
-        noteID: noteID,
+        text: temp.comment,
+        noteID: temp.id,
         timestamp: Date.now(),
       })
         .then(() => {
-          newComment.value = "";
+          // newComment.value = "";
           getNotes();
           Notify.create({
             message: "Kommentar erfolgreich hinzugefügt!",
@@ -276,20 +292,23 @@ export default defineComponent({
 
       editNote.value = true;
 
+      console.log(docSnap.data());
+
       noteId.value = docSnap.id;
       title.value = docSnap.data().title;
       creator.value = docSnap.data().creatorID;
       content.value = docSnap.data().content;
     };
 
-    const editNoteFunction = async (id, title, content) => {
-      const note = doc(db, "bulletin-boards", id);
+    const editNoteFunction = async (temp) => {
+      console.log("hallo");
+      const note = doc(db, "bulletin-boards", temp.id);
       const currentUser = auth.currentUser.uid;
-
+      console.log(currentUser, creator.value);
       if (currentUser === creator.value) {
         await updateDoc(note, {
-          title: title,
-          content: content,
+          title: temp.title,
+          content: temp.content,
           creatorID: creator.value,
           edited: Date.now(),
         })
@@ -318,8 +337,8 @@ export default defineComponent({
       }
     };
 
-    onMounted(() => {
-      getNotes();
+    onMounted(async () => {
+      await getNotes();
     });
     return {
       showBackButton,
@@ -327,6 +346,7 @@ export default defineComponent({
       pageName,
       addSomething,
       newComment,
+      newComments,
       editNote,
       title,
       content,
