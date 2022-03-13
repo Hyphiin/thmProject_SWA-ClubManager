@@ -11,21 +11,6 @@
       <div class="swa-home-section">
         <div class="swa-board">
           <h2>Letzter Eintrag Schwarzes Brett</h2>
-          <!-- <q-card bordered class="swa-card">
-            <q-card-section>
-              <div class="text-h6">Bierverkostung März 2022</div>
-              <div class="text-subtitle2">by John Doe</div>
-            </q-card-section>
-
-            <q-separator />
-
-            <q-card-section>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat.
-            </q-card-section>
-          </q-card> -->
           <div
             v-for="(note, i) in notes"
             :key="`noteNumber_${i}`"
