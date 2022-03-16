@@ -10,7 +10,7 @@
       <div v-for="(note, i) in notes" :key="`noteNumber_${i}`">
         <Note
           :id="note.id"
-          :creator-id="note.creatorID"
+          :creator-Id="note.author"
           :title="note.title"
           :content="note.content"
           :comments="note.comments"
@@ -67,9 +67,6 @@ export default defineComponent({
 
     const notes = ref([]);
     const user = ref(auth.currentUser.uid);
-    const newComment = ref("");
-
-    const newComments = ref([]);
 
     const editNote = ref(false);
     const title = ref("");
@@ -105,6 +102,7 @@ export default defineComponent({
           comments: comments,
         });
       });
+      console.log(notes.value);
     };
 
     const getComments = async (noteID) => {

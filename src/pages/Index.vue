@@ -18,7 +18,7 @@
           >
             <Note
               :id="note.id"
-              :creator-id="note.creatorID"
+              :creator-id="note.author"
               :title="note.title"
               :content="note.content"
               :comments="[]"

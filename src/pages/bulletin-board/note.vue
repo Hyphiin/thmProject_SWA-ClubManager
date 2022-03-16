@@ -4,7 +4,7 @@
       <div class="row items-center no-wrap">
         <div class="col">
           <div class="text-h6">{{ title }}</div>
-          <div class="text-subtitle2">von {{ creatorID }}</div>
+          <div class="text-subtitle2">von {{ creatorId }}</div>
         </div>
         <div class="col-auto">
           <q-btn color="grey-7" round flat icon="more_vert">
@@ -90,6 +90,8 @@ export default defineComponent({
   props: ["id", "creatorId", "title", "content", "comments", "commentMode"],
   setup(props, context) {
     const newComment = ref("");
+
+    console.log(props.creatorId);
 
     const editNote = ref(false);
 
