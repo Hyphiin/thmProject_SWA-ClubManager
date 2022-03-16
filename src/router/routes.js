@@ -29,6 +29,11 @@ const routes = [
         component: () => import("pages/field-management/add-field")
       },
       {
+        path: "fields/field-assignment",
+        name: "field-assignment",
+        component: () => import("pages/field-management/field-assignment")
+      },
+      {
         path: "bulletin-board",
         name: "notes-overview",
         component: () => import("pages/bulletin-board/notes-overview")

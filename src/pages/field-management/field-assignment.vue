@@ -47,7 +47,7 @@
           class="full-width"
           label="Speichern"
           icon="done"
-          @click="refresh()"
+          @click="addCalender"
         />
       </div>
     </q-pull-to-refresh>
@@ -68,8 +68,8 @@ export default defineComponent({
   },
   setup() {
     const showBackButton = ref(true);
-    const prevStep = ref("add-appointment");
-    const pageName = ref("Termin hinzufügen");
+    const prevStep = ref("fields-overview");
+    const pageName = ref("Platzbelegung hinzufügen");
     const showAddButton = ref(false);
 
     const title = ref("");
@@ -163,46 +163,6 @@ export default defineComponent({
     };
   },
 });
-// import MainApp from "pages/MainApp";
-
-// export default {
-//   name: "add-appointment",
-//   components: {
-//     MainApp
-//   },
-//   data () {
-//     return {
-//       showBackButton: true,
-//       prevStep: "appointment-overview",
-//       pageName: "Termin hinzufügen",
-//       showAddButton: false,
-//       title:"",
-//       content:"",
-//       category: "",
-//       categories: [
-//         "Testspiel", "Pflichtspiel", "Training"
-//       ],
-//       date: "",
-//       dateTime: "",
-//       team: null,
-//       teams: [
-//         "1. Herren", "2. Herren", "A-Jugend", "B-Jugend"
-//       ],
-//       field: null,
-//       fields: [
-//         "A-Platz", "B-Platz"
-//       ]
-//     }
-//   },
-//   methods: {
-//     refresh(done) {
-//       setTimeout(() => {
-//         console.log("refresh")
-//         done()
-//       }, 1000)
-//     }
-//   }
-// }
 </script>
 
 <style lang="scss"></style>
