@@ -71,7 +71,7 @@
             </q-item-section>
           </q-item>
 
-          <q-item clickable :to="{ name: 'add-appointment' }">
+          <q-item clickable :to="{ name: 'field-assignment' }">
             <q-item-section avatar>
               <q-icon color="red" name="schedule" />
             </q-item-section>
