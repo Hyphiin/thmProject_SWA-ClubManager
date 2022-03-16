@@ -54,7 +54,7 @@
     </div>
   </q-card>
 
-  <!-- <q-dialog v-model="editNote" persistent>
+  <!-- <q-dialog v-model="editAppointment" persistent>
     <q-card>
       <q-card-section class="row items-center">
         <div class="swa-edit-section">
@@ -96,7 +96,7 @@ export default defineComponent({
     "timestamp",
   ],
   setup(props, context) {
-    const editNote = ref(false);
+    const editAppointment = ref(false);
 
     const titleValue = ref(props.title);
     const contentValue = ref(props.content);
@@ -109,35 +109,27 @@ export default defineComponent({
     const dateValue = ref(splitDate[0]);
     const dateTimeValue = ref(splitDate[1]);
 
-    const getNote = () => {
-      context.emit("getNote", props.id);
-      editNote.value = true;
+    const getAppointment = () => {
+      context.emit("get-appointment", props.id);
+      editAppointment.value = true;
     };
 
     const confirmDelete = () => {
       context.emit("confirmDelete", props.id);
     };
 
-    const addNewComment = () => {
-      context.emit("addNewComment", {
-        id: props.id,
-        comment: newComment.value,
+    const editAppointmentFunction = (id, title, content) => {
+      context.emit("edit-appointment", {
+        // id: id,
+        // title: titleValue.value,
+        // content: contentValue.value,
+        // creatorId: props.creatorId,
       });
-    };
-
-    const editNoteFunction = (id, title, content) => {
-      context.emit("edit-note", {
-        id: id,
-        title: titleValue.value,
-        content: contentValue.value,
-        creatorId: props.creatorId,
-      });
-      editNote.value = false;
+      editAppointment.value = false;
     };
 
     return {
-      newComment,
-      editNote,
+      editAppointment,
       titleValue,
       contentValue,
       categoryValue,
@@ -145,10 +137,9 @@ export default defineComponent({
       teamValue,
       dateValue,
       dateTimeValue,
-      getNote,
+      getAppointment,
       confirmDelete,
-      addNewComment,
-      editNoteFunction,
+      editAppointmentFunction,
     };
   },
 });
