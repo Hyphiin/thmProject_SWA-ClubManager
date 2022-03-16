@@ -73,15 +73,15 @@
 import MainApp from "pages/MainApp";
 
 export default {
-  name: "add-appointment",
+  name: "field-assignment",
   components: {
     MainApp
   },
   data () {
     return {
       showBackButton: true,
-      prevStep: "appointment-overview",
-      pageName: "Termin hinzufügen",
+      prevStep: "fields-overview",
+      pageName: "Platzbelegung hinzufügen",
       showAddButton: false,
       title:"",
       content:"",
