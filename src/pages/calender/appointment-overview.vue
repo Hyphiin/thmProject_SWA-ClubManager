@@ -44,6 +44,7 @@
 import { defineComponent, onMounted, ref } from "@vue/runtime-core";
 import {
   collection,
+  deleteDoc,
   doc,
   getDocs,
   orderBy,
@@ -155,7 +156,6 @@ export default defineComponent({
     };
 
     const editAppointmentFunction = async (temp) => {
-      console.log(temp.date, temp.dateTime);
       // Date ist noch falsch
       const appointment = doc(db, "calender", temp.id);
       const currentUser = auth.currentUser.uid;

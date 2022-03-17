@@ -152,8 +152,6 @@ export default defineComponent({
     const teamValue = ref(props.team);
     const timestampValue = ref(new Date(props.timestamp.seconds * 1000));
 
-    console.log(timestampValue.value);
-
     const year = ref(timestampValue.value.getFullYear().toString());
     const month = ref(timestampValue.value.getMonth() + 1);
     const day = ref(timestampValue.value.getDate());
@@ -177,10 +175,7 @@ export default defineComponent({
       year.value + "-" + newMonth.value + "-" + newDay.value
     );
 
-    console.log(dateValue.value);
     const dateTimeValue = ref(timestampValue.value.toString().slice(16));
-
-    const testDate = ref("2019/02/01");
 
     const getAppointment = () => {
       editAppointment.value = true;
@@ -214,7 +209,6 @@ export default defineComponent({
       teamValue,
       dateValue,
       dateTimeValue,
-      testDate,
       getAppointment,
       confirmDelete,
       editAppointmentFunction,

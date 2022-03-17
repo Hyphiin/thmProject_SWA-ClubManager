@@ -91,8 +91,6 @@ export default defineComponent({
   setup(props, context) {
     const newComment = ref("");
 
-    console.log(props.creatorId);
-
     const editNote = ref(false);
 
     const titleValue = ref(props.title);

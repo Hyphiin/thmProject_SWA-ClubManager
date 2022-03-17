@@ -102,7 +102,6 @@ export default defineComponent({
           comments: comments,
         });
       });
-      console.log(notes.value);
     };
 
     const getComments = async (noteID) => {
@@ -187,6 +186,7 @@ export default defineComponent({
       }
     };
 
+    // @ToDo noch gebraucht??
     const getNote = async (id) => {
       const note = doc(db, "bulletin-boards", id);
 
@@ -203,11 +203,11 @@ export default defineComponent({
     const editNoteFunction = async (temp) => {
       const note = doc(db, "bulletin-boards", temp.id);
       const currentUser = auth.currentUser.uid;
-      if (currentUser === creator.value) {
+      if (currentUser === temp.creatorId) {
         await updateDoc(note, {
           title: temp.title,
           content: temp.content,
-          creatorID: creator.value,
+          creatorID: temp.creatorId,
           edited: Date.now(),
         })
           .then(() => {
