@@ -20,7 +20,7 @@
           <q-btn color="grey-7" round flat icon="more_vert">
             <q-menu cover auto-close>
               <q-list>
-                <q-item clickable>
+                <q-item clickable @click="getAppointment">
                   <q-item-section>Bearbeiten</q-item-section>
                 </q-item>
                 <q-item clickable @click="confirmDelete">
@@ -40,7 +40,7 @@
     </q-card-section>
 
     <q-separator />
-    <div class="row swa-vote">
+    <!-- <div class="row swa-vote">
       <div class="col-6">
         <q-btn class="swa-cancel full-width" icon="thumb_down">{{
           appointment.cancellation
@@ -51,17 +51,61 @@
           appointment.commitments
         }}</q-btn>
       </div>
-    </div>
+    </div> -->
   </q-card>
 
-  <!-- <q-dialog v-model="editAppointment" persistent>
+  <q-dialog v-model="editAppointment" persistent>
     <q-card>
       <q-card-section class="row items-center">
         <div class="swa-edit-section">
-          <div class="swa-edit-section">
-            <q-input outlined v-model="titleValue" label="Titel *" />
+          <q-input outlined v-model="titleValue" label="Titel *" />
 
-            <q-input v-model="contentValue" outlined autogrow />
+          <q-input
+            v-model="contentValue"
+            outlined
+            autogrow
+            label="Beschreibung"
+          />
+
+          <q-select
+            outlined
+            v-model="teamValue"
+            :options="teams"
+            label="Mannschaft"
+          />
+
+          <q-select
+            outlined
+            v-model="categoryValue"
+            :options="categories"
+            label="Kategorie"
+          />
+
+          <q-select
+            outlined
+            v-model="fieldValue"
+            :options="fields"
+            label="Platz"
+          />
+
+          <div>
+            <div class="swa-new-appointment-date">
+              <q-date
+                v-model="dateValue"
+                mask="YYYY-MM-DD"
+                color="primary"
+                today-btn
+              />
+            </div>
+            <div class="swa-new-appointment-time">
+              <q-time
+                v-model="dateTimeValue"
+                mask="HH:mm"
+                color="primary"
+                now-btn
+                format24h
+              />
+            </div>
           </div>
         </div>
       </q-card-section>
@@ -72,12 +116,12 @@
           flat
           label="Speichern"
           color="primary"
-          @click="editNoteFunction(id, title, content)"
+          @click="editAppointmentFunction"
           v-close-popup
         />
       </q-card-actions>
     </q-card>
-  </q-dialog> -->
+  </q-dialog>
 </template>
 
 <script>
@@ -94,6 +138,9 @@ export default defineComponent({
     "field",
     "team",
     "timestamp",
+    "teams",
+    "categorys",
+    "fields",
   ],
   setup(props, context) {
     const editAppointment = ref(false);
@@ -103,14 +150,39 @@ export default defineComponent({
     const categoryValue = ref(props.category);
     const fieldValue = ref(props.field);
     const teamValue = ref(props.team);
-    const timestampValue = ref(props.timestamp);
+    const timestampValue = ref(new Date(props.timestamp.seconds * 1000));
 
-    const splitDate = timestampValue.split(" ");
-    const dateValue = ref(splitDate[0]);
-    const dateTimeValue = ref(splitDate[1]);
+    console.log(timestampValue.value);
+
+    const year = ref(timestampValue.value.getFullYear().toString());
+    const month = ref(timestampValue.value.getMonth() + 1);
+    const day = ref(timestampValue.value.getDate());
+
+    const newMonth = ref("00");
+    const newDay = ref("00");
+
+    if (month.value < 10) {
+      newMonth.value = "0" + month.value.toString();
+    } else {
+      newMonth.value = month.value.toString();
+    }
+
+    if (day.value < 10) {
+      newDay.value = "0" + day.value.toString();
+    } else {
+      newDay.value = day.value.toString();
+    }
+
+    const dateValue = ref(
+      year.value + "-" + newMonth.value + "-" + newDay.value
+    );
+
+    console.log(dateValue.value);
+    const dateTimeValue = ref(timestampValue.value.toString().slice(16));
+
+    const testDate = ref("2019/02/01");
 
     const getAppointment = () => {
-      context.emit("get-appointment", props.id);
       editAppointment.value = true;
     };
 
@@ -118,12 +190,17 @@ export default defineComponent({
       context.emit("confirmDelete", props.id);
     };
 
-    const editAppointmentFunction = (id, title, content) => {
+    const editAppointmentFunction = () => {
       context.emit("edit-appointment", {
-        // id: id,
-        // title: titleValue.value,
-        // content: contentValue.value,
-        // creatorId: props.creatorId,
+        id: props.id,
+        title: titleValue.value,
+        content: contentValue.value,
+        author: props.author,
+        category: categoryValue.value,
+        field: fieldValue.value,
+        team: teamValue.value,
+        date: dateValue.value,
+        dateTime: dateTimeValue.value,
       });
       editAppointment.value = false;
     };
@@ -137,6 +214,7 @@ export default defineComponent({
       teamValue,
       dateValue,
       dateTimeValue,
+      testDate,
       getAppointment,
       confirmDelete,
       editAppointmentFunction,

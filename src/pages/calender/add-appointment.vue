@@ -6,7 +6,7 @@
     :showAddButton="showAddButton"
     class="swa-main-app-bracket"
   >
-    <q-pull-to-refresh @refresh="refresh">
+    <q-pull-to-refresh @refresh="refresh()">
       <div class="swa-add-section">
         <q-input outlined v-model="title" label="Titel *" />
 
@@ -47,7 +47,7 @@
           class="full-width"
           label="Speichern"
           icon="done"
-          @click="refresh()"
+          @click="addCalender"
         />
       </div>
     </q-pull-to-refresh>

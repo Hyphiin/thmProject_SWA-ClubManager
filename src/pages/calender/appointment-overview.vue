@@ -13,14 +13,16 @@
       >
         <appointment
           :id="appointment.id"
-          :author="appointment.author"
-          :content="appointment.content"
-          :category="appointment.category"
-          :field="appointment.field"
-          :team="appointment.team"
-          :timestamp="appointment.timestamp"
-          :title="appointment.title"
-          @get-appointment="getAppointment($event)"
+          :author="appointment.data.author"
+          :content="appointment.data.content"
+          :category="appointment.data.category"
+          :field="appointment.data.field"
+          :team="appointment.data.team"
+          :timestamp="appointment.data.timestamp"
+          :title="appointment.data.title"
+          :fields="fields"
+          :teams="teams"
+          :categorys="categorys"
           @confirm-delete="confirmDelete($event)"
           @edit-appointment="editAppointmentFunction($event)"
         />
@@ -39,8 +41,17 @@
 </template>
 
 <script>
-import { defineComponent } from "@vue/runtime-core";
+import { defineComponent, onMounted, ref } from "@vue/runtime-core";
+import {
+  collection,
+  doc,
+  getDocs,
+  orderBy,
+  query,
+  updateDoc,
+} from "firebase/firestore";
 import MainApp from "pages/MainApp";
+import { auth, db } from "src/boot/firebase";
 import Appointment from "./appointment.vue";
 
 export default defineComponent({
@@ -56,7 +67,6 @@ export default defineComponent({
     const addSomething = ref("add-appointment");
     const tab = ref("detail");
     const appointments = ref([]);
-    const events = ref(this.appointments);
 
     //  [
     //   {
@@ -109,33 +119,25 @@ export default defineComponent({
     // ]
 
     const getAppointments = async () => {
-      // fields.value = [];
-      // const querySnapshot = await getDocs(collection(db, "fields"));
-      // querySnapshot.forEach((doc) => {
-      //   // doc.data() is never undefined for query doc snapshots
-      //   fields.value.push({ id: doc.id, data: doc.data() });
-      // });
+      appointments.value = [];
+      const querySnapshot = await getDocs(
+        query(collection(db, "calender"), orderBy("timestamp"))
+      );
+      querySnapshot.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+        appointments.value.push({ id: doc.id, data: doc.data() });
+      });
     };
 
-    const getAppointment = async (id) => {
-      // const field = doc(db, "fields", id);
-      // const docSnap = await getDoc(field);
-      // editField.value = true;
-      // fieldId.value = docSnap.id;
-      // name.value = docSnap.data().title;
-      // seat.value = docSnap.data().seats;
-      // standingRoom.value = docSnap.data().standingRoom;
-      // street.value = docSnap.data().street;
-      // plz.value = docSnap.data().plz;
-      // city.value = docSnap.data().city;
-      // user.value = docSnap.data().user;
-    };
+    const categories = ref(["Testspiel", "Pflichtspiel", "Training"]);
+    const teams = ref(["1. Herren", "2. Herren", "A-Jugend", "B-Jugend"]);
+    const fields = ref(["A-Platz", "B-Platz"]);
 
     const confirmDelete = async (id) => {
       await deleteDoc(doc(db, "calender", id))
         .then(() => {
           Notify.create({
-            message: "Plan erfolgreich gelöscht!",
+            message: "Termin erfolgreich gelöscht!",
             color: "positive",
             position: "top",
           });
@@ -151,43 +153,38 @@ export default defineComponent({
         });
     };
 
-    const editAppointmentFunction = async (
-      id,
-      name,
-      seat,
-      standingRoom,
-      street,
-      plz,
-      city
-    ) => {
-      // const field = doc(db, "fields", id);
-      // const currentUser = auth.currentUser.uid;
-      // await updateDoc(field, {
-      //   title: name,
-      //   seats: seat,
-      //   standingRoom: standingRoom,
-      //   street: street,
-      //   plz: plz,
-      //   city: city,
-      //   user: user.value,
-      //   edited: currentUser,
-      // })
-      //   .then(() => {
-      //     Notify.create({
-      //       message: "Plan erfolgreich editiert!",
-      //       color: "positive",
-      //       position: "top",
-      //     });
-      //     getFields();
-      //   })
-      //   .catch((error) => {
-      //     console.log(error);
-      //     Notify.create({
-      //       message: "Fehlgeschlagen!",
-      //       color: "negative",
-      //       position: "top",
-      //     });
-      //   });
+    const editAppointmentFunction = async (temp) => {
+      console.log(temp);
+      const appointment = doc(db, "calender", temp.id);
+      const currentUser = auth.currentUser.uid;
+      if (currentUser === temp.author) {
+        await updateDoc(appointment, {
+          title: temp.title,
+          content: temp.content,
+          category: temp.category,
+          field: temp.field,
+          team: temp.team,
+          author: temp.author,
+          timestamp: new Date(temp.date + "" + temp.dateTime + ":00"),
+          edited: currentUser,
+        })
+          .then(() => {
+            Notify.create({
+              message: "Termin erfolgreich editiert!",
+              color: "positive",
+              position: "top",
+            });
+            getAppointments();
+          })
+          .catch((error) => {
+            console.log(error);
+            Notify.create({
+              message: "Fehlgeschlagen!",
+              color: "negative",
+              position: "top",
+            });
+          });
+      }
     };
 
     const refresh = (done) => {
@@ -209,7 +206,9 @@ export default defineComponent({
       addSomething,
       tab,
       appointments,
-      events,
+      teams,
+      categories,
+      fields,
       confirmDelete,
       editAppointmentFunction,
       refresh,
