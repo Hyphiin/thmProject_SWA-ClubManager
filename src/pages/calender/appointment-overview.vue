@@ -51,6 +51,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import MainApp from "pages/MainApp";
+import { Notify } from "quasar";
 import { auth, db } from "src/boot/firebase";
 import Appointment from "./appointment.vue";
 
@@ -154,7 +155,8 @@ export default defineComponent({
     };
 
     const editAppointmentFunction = async (temp) => {
-      console.log(temp);
+      console.log(temp.date, temp.dateTime);
+      // Date ist noch falsch
       const appointment = doc(db, "calender", temp.id);
       const currentUser = auth.currentUser.uid;
       if (currentUser === temp.author) {
@@ -165,7 +167,7 @@ export default defineComponent({
           field: temp.field,
           team: temp.team,
           author: temp.author,
-          timestamp: new Date(temp.date + "" + temp.dateTime + ":00"),
+          timestamp: new Date(temp.date + "T" + temp.dateTime + ":00"),
           edited: currentUser,
         })
           .then(() => {
