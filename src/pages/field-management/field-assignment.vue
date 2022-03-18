@@ -97,7 +97,6 @@ export default defineComponent({
     const addCalender = async () => {
       // Add a new document with a generated id.
       let timestamp = new Date(date.value + " " + dateTime.value);
-      console.log(timestamp);
 
       const docRef = await addDoc(collection(db, "calender"), {
         title: title.value,

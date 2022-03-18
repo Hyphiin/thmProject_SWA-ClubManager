@@ -35,7 +35,7 @@
         <q-chat-message
           :name="comment.author"
           :text="[comment.text]"
-          :sent="false"
+          :sent="comment.author === user ? true : false"
         />
       </div>
     </q-card-section>
@@ -74,7 +74,7 @@
           flat
           label="Speichern"
           color="primary"
-          @click="editNoteFunction(id, title, content)"
+          @click="editNoteFunction(id)"
           v-close-popup
         />
       </q-card-actions>
@@ -84,6 +84,7 @@
 
 <script>
 import { defineComponent, ref } from "@vue/runtime-core";
+import { auth } from "src/boot/firebase";
 
 export default defineComponent({
   name: "Note",
@@ -96,8 +97,9 @@ export default defineComponent({
     const titleValue = ref(props.title);
     const contentValue = ref(props.content);
 
+    const user = ref(auth.currentUser.uid);
+
     const getNote = () => {
-      context.emit("getNote", props.id);
       editNote.value = true;
     };
 
@@ -112,7 +114,7 @@ export default defineComponent({
       });
     };
 
-    const editNoteFunction = (id, title, content) => {
+    const editNoteFunction = (id) => {
       context.emit("edit-note", {
         id: id,
         title: titleValue.value,
@@ -127,6 +129,7 @@ export default defineComponent({
       editNote,
       titleValue,
       contentValue,
+      user,
       getNote,
       confirmDelete,
       addNewComment,

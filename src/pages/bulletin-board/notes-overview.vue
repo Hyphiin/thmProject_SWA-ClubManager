@@ -15,7 +15,6 @@
           :content="note.content"
           :comments="note.comments"
           :comment-mode="true"
-          @get-note="getNote($event)"
           @confirm-delete="confirmDelete($event)"
           @add-new-comment="addNewComment($event)"
           @edit-note="editNoteFunction($event)"
@@ -68,11 +67,7 @@ export default defineComponent({
     const notes = ref([]);
     const user = ref(auth.currentUser.uid);
 
-    const editNote = ref(false);
-    const title = ref("");
     const creator = ref("");
-    const content = ref("");
-    const noteId = ref("");
 
     const refresh = (done) => {
       setTimeout(() => {
@@ -186,20 +181,6 @@ export default defineComponent({
       }
     };
 
-    // @ToDo noch gebraucht??
-    const getNote = async (id) => {
-      const note = doc(db, "bulletin-boards", id);
-
-      const docSnap = await getDoc(note);
-
-      editNote.value = true;
-
-      noteId.value = docSnap.id;
-      title.value = docSnap.data().title;
-      creator.value = docSnap.data().creatorID;
-      content.value = docSnap.data().content;
-    };
-
     const editNoteFunction = async (temp) => {
       const note = doc(db, "bulletin-boards", temp.id);
       const currentUser = auth.currentUser.uid;
@@ -248,7 +229,6 @@ export default defineComponent({
       addNewComment,
       loadOlderNews,
       confirmDelete,
-      getNote,
       editNoteFunction,
     };
   },

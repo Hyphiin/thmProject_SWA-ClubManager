@@ -139,7 +139,7 @@ export default defineComponent({
     "team",
     "timestamp",
     "teams",
-    "categorys",
+    "categories",
     "fields",
   ],
   setup(props, context) {

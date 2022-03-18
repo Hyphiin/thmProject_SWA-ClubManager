@@ -68,7 +68,7 @@ export default defineComponent({
   },
   setup() {
     const showBackButton = ref(true);
-    const prevStep = ref("add-appointment");
+    const prevStep = ref("appointment-overview");
     const pageName = ref("Termin hinzufügen");
     const showAddButton = ref(false);
 

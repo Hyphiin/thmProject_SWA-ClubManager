@@ -29,49 +29,25 @@
 
         <div class="swa-appointment">
           <h2>Die nächsten Termine</h2>
-          <q-card class="swa-card bg-secondary text-white">
-            <q-card-section>
-              <div class="text-h6">Testspiel 02.03.2022</div>
-              <div class="text-subtitle2">@ 2. Herren</div>
-            </q-card-section>
-            <q-separator dark />
-
-            <q-card-section>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat.
-            </q-card-section>
-
-            <q-separator dark />
-
-            <q-card-actions>
-              <q-btn flat>Action 1</q-btn>
-              <q-btn flat>Action 2</q-btn>
-            </q-card-actions>
-          </q-card>
-
-          <q-card class="swa-card bg-secondary text-white">
-            <q-card-section>
-              <div class="text-h6">Testspiel 03.03.2022</div>
-              <div class="text-subtitle2">@ E-Jugend</div>
-            </q-card-section>
-            <q-separator dark />
-
-            <q-card-section>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat.
-            </q-card-section>
-
-            <q-separator dark />
-
-            <q-card-actions>
-              <q-btn flat>Action 1</q-btn>
-              <q-btn flat>Action 2</q-btn>
-            </q-card-actions>
-          </q-card>
+          <div
+            v-for="(appointment, i) in appointments"
+            :key="`appointNumber_${i}`"
+            @click="seeAppointments"
+          >
+            <appointment
+              :id="appointment.id"
+              :author="appointment.data.author"
+              :content="appointment.data.content"
+              :category="appointment.data.category"
+              :field="appointment.data.field"
+              :team="appointment.data.team"
+              :timestamp="appointment.data.timestamp"
+              :title="appointment.data.title"
+              :fields="fields"
+              :teams="teams"
+              :categories="categories"
+            />
+          </div>
         </div>
       </div>
     </q-pull-to-refresh>
@@ -82,6 +58,7 @@
 import { defineComponent, ref, onMounted } from "vue";
 import MainApp from "pages/MainApp";
 import Note from "pages/bulletin-board/note.vue";
+import Appointment from "pages/calender/appointment.vue";
 import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
 import { db } from "src/boot/firebase";
 import { useRouter } from "vue-router";
@@ -91,6 +68,7 @@ export default defineComponent({
   components: {
     MainApp,
     Note,
+    Appointment,
   },
   setup() {
     const showBackButton = ref(false);
@@ -100,6 +78,7 @@ export default defineComponent({
     const showAddButton = ref(false);
 
     const notes = ref([]);
+    const appointments = ref([]);
 
     const router = useRouter();
 
@@ -129,12 +108,34 @@ export default defineComponent({
       });
     };
 
+    const categories = ref(["Testspiel", "Pflichtspiel", "Training"]);
+    const teams = ref(["1. Herren", "2. Herren", "A-Jugend", "B-Jugend"]);
+    const fields = ref(["A-Platz", "B-Platz"]);
+
+    const getAppointments = async () => {
+      appointments.value = [];
+      const querySnapshot = await getDocs(
+        query(collection(db, "calender"), orderBy("timestamp"), limit(2))
+      );
+      querySnapshot.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+        appointments.value.push({ id: doc.id, data: doc.data() });
+      });
+
+      console.log(appointments.value);
+    };
+
     const seeBoards = () => {
       router.replace({ name: "notes-overview" });
     };
 
+    const seeAppointments = () => {
+      router.replace({ name: "appointment-overview" });
+    };
+
     onMounted(async () => {
       await getNote();
+      await getAppointments();
     });
     return {
       showBackButton,
@@ -143,8 +144,14 @@ export default defineComponent({
       addSomething,
       showAddButton,
       notes,
+      appointments,
       refresh,
       seeBoards,
+      categories,
+      teams,
+      fields,
+      getAppointments,
+      seeAppointments,
     };
   },
 });

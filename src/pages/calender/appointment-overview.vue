@@ -7,10 +7,7 @@
     class="swa-main-app-bracket"
   >
     <q-pull-to-refresh @refresh="refresh">
-      <div
-        v-for="(appointment, i) in this.appointments"
-        :key="`appointNumber_${i}`"
-      >
+      <div v-for="(appointment, i) in appointments" :key="`appointNumber_${i}`">
         <appointment
           :id="appointment.id"
           :author="appointment.data.author"
@@ -22,7 +19,7 @@
           :title="appointment.data.title"
           :fields="fields"
           :teams="teams"
-          :categorys="categorys"
+          :categories="categories"
           @confirm-delete="confirmDelete($event)"
           @edit-appointment="editAppointmentFunction($event)"
         />
@@ -69,56 +66,6 @@ export default defineComponent({
     const addSomething = ref("add-appointment");
     const tab = ref("detail");
     const appointments = ref([]);
-
-    //  [
-    //   {
-    //     title: "Testspiel gegen Buseck",
-    //     content: "Treffen eine Stunde früher.",
-    //     category: "Testspiel",
-    //     date: "2022-04-02",
-    //     dateTime: "12:30",
-    //     team: "1. Herren",
-    //     field: "A-Platz",
-    //     commitments: 1,
-    //     cancellation: null,
-    //   },
-    //   {
-    //     title: "Pflichtspiel gegen Buseck",
-    //     content: "Treffen eine Stunde früher.",
-    //     category: "Pflichtspiel",
-    //     date: "2022-04-02",
-    //     dateTime: "12:30",
-    //     team: "1. Herren",
-    //     field: "A-Platz",
-    //   },
-    //   {
-    //     title: "Training",
-    //     content: "Pünkltich sein!!",
-    //     category: "Training",
-    //     date: "2022-04-02",
-    //     dateTime: "12:30",
-    //     team: "1. Herren",
-    //     field: "A-Platz",
-    //   },
-    //   {
-    //     title: "Pflichtspiel gegen Buseck",
-    //     content: "Treffen eine Stunde früher.",
-    //     category: "Pflichtspiel",
-    //     date: "2022-04-02",
-    //     dateTime: "12:30",
-    //     team: "A-Jugend",
-    //     field: "A-Platz",
-    //   },
-    //   {
-    //     title: "Testspiel gegen Reiskirchen",
-    //     content: "Treffen eine Stunde früher.",
-    //     category: "Testspiel",
-    //     date: "2022-04-02",
-    //     dateTime: "12:30",
-    //     team: "2. Herren",
-    //     field: "B-Platz",
-    //   },
-    // ]
 
     const getAppointments = async () => {
       appointments.value = [];
