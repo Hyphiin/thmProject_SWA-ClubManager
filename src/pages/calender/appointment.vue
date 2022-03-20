@@ -40,18 +40,24 @@
     </q-card-section>
 
     <q-separator />
-    <!-- <div class="row swa-vote">
+    <div class="row swa-vote">
       <div class="col-6">
-        <q-btn class="swa-cancel full-width" icon="thumb_down">{{
-          appointment.cancellation
-        }}</q-btn>
+        <q-btn
+          class="swa-cancel full-width"
+          icon="thumb_down"
+          @click="addVote('down')"
+          >{{ cancellationValue }}</q-btn
+        >
       </div>
       <div class="col-6">
-        <q-btn class="swa-commitment full-width" icon="thumb_up">{{
-          appointment.commitments
-        }}</q-btn>
+        <q-btn
+          class="swa-commitment full-width"
+          icon="thumb_up"
+          @click="addVote('up')"
+          >{{ commitmentsValue }}</q-btn
+        >
       </div>
-    </div> -->
+    </div>
   </q-card>
 
   <q-dialog v-model="editAppointment" persistent>
@@ -125,7 +131,17 @@
 </template>
 
 <script>
-import { defineComponent, ref } from "@vue/runtime-core";
+import { defineComponent, ref, onMounted } from "@vue/runtime-core";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDocs,
+  query,
+  updateDoc,
+} from "firebase/firestore";
+import { Notify } from "quasar";
+import { auth, db } from "src/boot/firebase";
 
 export default defineComponent({
   name: "Appointment",
@@ -150,6 +166,10 @@ export default defineComponent({
     const categoryValue = ref(props.category);
     const fieldValue = ref(props.field);
     const teamValue = ref(props.team);
+
+    const cancellationValue = ref(0);
+    const commitmentsValue = ref(0);
+
     const timestampValue = ref(new Date(props.timestamp.seconds * 1000));
 
     const year = ref(timestampValue.value.getFullYear().toString());
@@ -200,6 +220,101 @@ export default defineComponent({
       editAppointment.value = false;
     };
 
+    const addVote = async (vote) => {
+      const user = auth.currentUser.uid;
+      const existingVote = await getVote();
+
+      if (existingVote.value !== vote) {
+        if (existingVote.id != "") {
+          const elementFound = doc(db, "votes", existingVote.id);
+
+          await updateDoc(elementFound, {
+            user: user,
+            calender: props.id,
+            kind: vote,
+          })
+            .then(async () => {
+              await getVote();
+              Notify.create({
+                message: "Vote erfolgreich hinzugefügt!",
+                color: "positive",
+                position: "top",
+              });
+            })
+            .catch((error) => {
+              console.log(error);
+              Notify.create({
+                message: "Fehlgeschlagen!",
+                color: "negative",
+                position: "top",
+              });
+            });
+        } else {
+          await addDoc(collection(db, "votes"), {
+            user: user,
+            calender: props.id,
+            kind: vote,
+          })
+            .then(async () => {
+              await getVote();
+              Notify.create({
+                message: "Vote erfolgreich hinzugefügt!",
+                color: "positive",
+                position: "top",
+              });
+            })
+            .catch((error) => {
+              console.log(error);
+              Notify.create({
+                message: "Fehlgeschlagen!",
+                color: "negative",
+                position: "top",
+              });
+            });
+        }
+      } else {
+        Notify.create({
+          message: "Sie haben bereits so abgestimmt!",
+          color: "negative",
+          position: "top",
+        });
+      }
+    };
+
+    const getVote = async () => {
+      const user = auth.currentUser.uid;
+      const votes = [];
+      const querySnapshot = await getDocs(query(collection(db, "votes")));
+      querySnapshot.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+        votes.push({ id: doc.id, data: doc.data() });
+      });
+
+      let existingVote = { value: "", id: "" };
+      commitmentsValue.value = 0;
+      cancellationValue.value = 0;
+
+      if (votes.length > 0) {
+        votes.forEach((el) => {
+          if (el.data.calender === props.id) {
+            if (el.data.user === user) {
+              existingVote = { value: el.data.kind, id: el.id };
+            }
+            if (el.data.kind === "up") {
+              commitmentsValue.value++;
+            } else {
+              cancellationValue.value++;
+            }
+          }
+        });
+      }
+      return existingVote;
+    };
+
+    onMounted(async () => {
+      await getVote();
+    });
+
     return {
       editAppointment,
       titleValue,
@@ -207,11 +322,14 @@ export default defineComponent({
       categoryValue,
       fieldValue,
       teamValue,
+      cancellationValue,
+      commitmentsValue,
       dateValue,
       dateTimeValue,
       getAppointment,
       confirmDelete,
       editAppointmentFunction,
+      addVote,
     };
   },
 });

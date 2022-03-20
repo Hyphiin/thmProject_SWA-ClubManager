@@ -32,7 +32,6 @@
           <div
             v-for="(appointment, i) in appointments"
             :key="`appointNumber_${i}`"
-            @click="seeAppointments"
           >
             <appointment
               :id="appointment.id"
@@ -97,7 +96,6 @@ export default defineComponent({
       );
       querySnapshot.forEach(async (doc) => {
         // doc.data() is never undefined for query doc snapshots
-        console.log(doc);
         notes.value.push({
           id: doc.id,
           title: doc.data().title,
@@ -121,16 +119,10 @@ export default defineComponent({
         // doc.data() is never undefined for query doc snapshots
         appointments.value.push({ id: doc.id, data: doc.data() });
       });
-
-      console.log(appointments.value);
     };
 
     const seeBoards = () => {
       router.replace({ name: "notes-overview" });
-    };
-
-    const seeAppointments = () => {
-      router.replace({ name: "appointment-overview" });
     };
 
     onMounted(async () => {
@@ -151,7 +143,6 @@ export default defineComponent({
       teams,
       fields,
       getAppointments,
-      seeAppointments,
     };
   },
 });
